@@ -100,6 +100,14 @@ document.getElementById('redoButton').addEventListener('click', () => {
     }
 });
 
+// Reset Highlights
+document.getElementById('resetButton').addEventListener('click', () => {
+    highlights.length = 0; // Clear the highlights array
+    undoStack.length = 0;  // Clear the undo stack
+    redoStack.length = 0;  // Clear the redo stack
+    drawClock(); // Redraw the clock without highlights
+});
+
 // Save the current highlights state to the undo stack
 function saveStateToUndoStack() {
     undoStack.push(JSON.stringify(highlights));
