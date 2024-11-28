@@ -106,3 +106,14 @@ button:hover {
     cursor: ew-resize;
     background-color: #ccc;
 }
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.button-group button {
+    flex: 1;
+    margin: 0 5px;
+}
