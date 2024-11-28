@@ -4,9 +4,9 @@ const dateDisplay = document.getElementById('dateDisplay');
 
 const highlights = []; // Stores user-defined highlights
 const undoStack = []; // Stores previous states for undo
-const redoStack = []; // Stores future states for redo
+const undoStack = [];
+const redoStack = [];
 
-// Clock settings
 let clockRadius;
 let centerX, centerY;
 let hourHandColor = '#000000', minuteHandColor = '#0000FF', secondHandColor = '#FF0000';
@@ -14,17 +14,20 @@ let hourHandWidth = 6, minuteHandWidth = 4, secondHandWidth = 2;
 let showDate = true, showNumbers = true;
 let numberFontSize = 14;
 
-// Button event listeners
+// Event listeners for sliders and color pickers
 document.getElementById('hourWidth').addEventListener('input', (e) => {
     hourHandWidth = e.target.value;
+    drawClock();
 });
 
 document.getElementById('minuteWidth').addEventListener('input', (e) => {
     minuteHandWidth = e.target.value;
+    drawClock();
 });
 
 document.getElementById('secondWidth').addEventListener('input', (e) => {
     secondHandWidth = e.target.value;
+    drawClock();
 });
 
 document.getElementById('numberSize').addEventListener('input', (e) => {
@@ -32,6 +35,7 @@ document.getElementById('numberSize').addEventListener('input', (e) => {
     drawClock();
 });
 
+// Color pickers
 document.getElementById('hourColor').addEventListener('input', (e) => {
     hourHandColor = e.target.value;
     drawClock();
@@ -62,24 +66,49 @@ document.getElementById('addHighlightButton').addEventListener('click', () => {
     const start = parseInt(document.getElementById('startTime').value, 10);
     const end = parseInt(document.getElementById('endTime').value, 10);
     const color = document.getElementById('highlightColor').value;
-    const type = document.querySelector('input[name="fillType"]:checked').value;
 
-    if (start < 0 || start > 12 || end < 0 || end > 12 || start === end) {
-        alert('Invalid time range! Select between 0 and 12.');
+    if (
+        isNaN(start) ||
+        isNaN(end) ||
+        start < 0 || start > 24 ||
+        end < 0 || end > 24 ||
+        start >= end
+    ) {
+        alert('Invalid time range! Start time must be less than end time, and both must be between 0 and 24.');
         return;
     }
 
-    saveStateToUndoStack(); // Save the current state before modifying
-    redoStack.length = 0; // Clear the redo stack since we are making a new change
+    saveStateToUndoStack();
+    redoStack.length = 0; // Clear the redo stack
 
-    highlights.push({ start, end, color, type });
+    // Split highlights into inner and outer based on time range
+    if (start < 12) {
+        const innerStart = start;
+        const innerEnd = Math.min(end, 12);
+        highlights.push({ start: innerStart, end: innerEnd, color, type: 'inner' });
+    }
+
+    if (end > 12) {
+        const outerStart = Math.max(start, 12);
+        const outerEnd = end;
+        highlights.push({ start: outerStart, end: outerEnd, color, type: 'outer' });
+    }
+
     drawClock();
 });
 
-// Undo the last action
+// Reset Highlights
+document.getElementById('resetButton').addEventListener('click', () => {
+    highlights.length = 0;
+    undoStack.length = 0;
+    redoStack.length = 0;
+    drawClock();
+});
+
+// Undo and Redo
 document.getElementById('undoButton').addEventListener('click', () => {
     if (undoStack.length > 0) {
-        saveStateToRedoStack(); // Save the current state for redo
+        saveStateToRedoStack();
         const previousState = undoStack.pop();
         loadState(previousState);
         drawClock();
@@ -88,24 +117,15 @@ document.getElementById('undoButton').addEventListener('click', () => {
     }
 });
 
-// Redo the last undone action
 document.getElementById('redoButton').addEventListener('click', () => {
     if (redoStack.length > 0) {
-        saveStateToUndoStack(); // Save the current state for undo
+        saveStateToUndoStack();
         const nextState = redoStack.pop();
         loadState(nextState);
         drawClock();
     } else {
         alert('Nothing to redo!');
     }
-});
-
-// Reset Highlights
-document.getElementById('resetButton').addEventListener('click', () => {
-    highlights.length = 0; // Clear the highlights array
-    undoStack.length = 0;  // Clear the undo stack
-    redoStack.length = 0;  // Clear the redo stack
-    drawClock(); // Redraw the clock without highlights
 });
 
 // Save the current highlights state to the undo stack
@@ -118,10 +138,10 @@ function saveStateToRedoStack() {
     redoStack.push(JSON.stringify(highlights));
 }
 
-// Load a state into the highlights array
+// Load a state into highlights
 function loadState(state) {
-    highlights.length = 0; // Clear the current highlights
-    highlights.push(...JSON.parse(state)); // Restore the saved highlights
+    highlights.length = 0;
+    highlights.push(...JSON.parse(state));
 }
 
 // Update canvas size
@@ -139,22 +159,21 @@ function updateCanvasSize() {
 function drawClock() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Step 1: Draw the outer fills first
+    // Step 1: Draw highlights (outer first, inner second)
     highlights
-        .filter((highlight) => highlight.type === 'outer')
+        .filter((highlight) => highlight.type === 'outer')  // Draw outer first
         .forEach((highlight) => drawHighlight(highlight));
 
-    // Step 2: Draw the inner fills next
     highlights
-        .filter((highlight) => highlight.type === 'inner')
+        .filter((highlight) => highlight.type === 'inner')  // Draw inner second
         .forEach((highlight) => drawHighlight(highlight));
 
-    // Step 3: Draw the clock face, ticks, and numbers
+    // Step 2: Draw the clock face, ticks, and numbers
     drawCircle();
     drawTicks();
     if (showNumbers) drawNumbers();
 
-    // Step 4: Draw clock hands and date
+    // Get current time
     const currentTime = new Date();
     const seconds = currentTime.getSeconds();
     const minutes = currentTime.getMinutes();
@@ -164,10 +183,12 @@ function drawClock() {
     const minuteAngle = minutes * 6 + seconds * 0.1;
     const hourAngle = hours * 30 + minutes * 0.5;
 
+    // Step 3: Draw hands with dynamic colors and widths
     drawHand(clockRadius * 0.7, hourAngle, hourHandColor, hourHandWidth);
     drawHand(clockRadius * 0.9, minuteAngle, minuteHandColor, minuteHandWidth);
     drawHand(clockRadius * 0.95, secondAngle, secondHandColor, secondHandWidth);
 
+    // Step 4: Draw date
     drawDate(hourAngle);
 }
 
@@ -183,7 +204,7 @@ function drawCircle() {
 // Draw ticks
 function drawTicks() {
     for (let i = 0; i < 60; i++) {
-        const angle = Math.PI / 30 * i;
+        const angle = (i * 6) * Math.PI / 180;
         const x1 = centerX + clockRadius * 0.9 * Math.cos(angle);
         const y1 = centerY + clockRadius * 0.9 * Math.sin(angle);
         const x2 = centerX + clockRadius * (i % 5 === 0 ? 0.85 : 0.88) * Math.cos(angle);
@@ -203,19 +224,19 @@ function drawNumbers() {
     ctx.font = `${numberFontSize}px Arial`;
     ctx.fillStyle = 'black';
     for (let i = 0; i < 12; i++) {
-        const angle = Math.PI / 6 * (i - 3); // Adjust for clock position
+        const angle = (i * 30 - 90) * Math.PI / 180;
         const x = centerX + clockRadius * 0.75 * Math.cos(angle);
         const y = centerY + clockRadius * 0.75 * Math.sin(angle);
-        const number = i === 0 ? 12 : i; // Replace 0 with 12
+        const number = i === 0 ? 12 : i;
         ctx.fillText(number.toString(), x - numberFontSize / 3, y + numberFontSize / 3);
     }
 }
 
 // Draw clock hands
 function drawHand(length, angle, color, width) {
-    const radianAngle = angle - 90;
-    const x = centerX + length * Math.cos(radianAngle * Math.PI / 180);
-    const y = centerY + length * Math.sin(radianAngle * Math.PI / 180);
+    const radianAngle = (angle - 90) * (Math.PI / 180);
+    const x = centerX + length * Math.cos(radianAngle);
+    const y = centerY + length * Math.sin(radianAngle);
 
     ctx.beginPath();
     ctx.moveTo(centerX, centerY);
@@ -227,16 +248,16 @@ function drawHand(length, angle, color, width) {
 
 // Draw a highlight
 function drawHighlight({ start, end, color, type }) {
-    const startAngle = Math.PI / 6 * (start - 3); // Adjust start angle
-    const endAngle = Math.PI / 6 * (end - 3); // Adjust end angle
+    const startAngle = (start % 12) * 30 * Math.PI / 180;
+    const endAngle = (end % 12) * 30 * Math.PI / 180;
 
     ctx.beginPath();
     ctx.moveTo(centerX, centerY);
 
     if (type === 'outer') {
-        ctx.arc(centerX, centerY, clockRadius, startAngle, endAngle, false);
+        ctx.arc(centerX, centerY, clockRadius, startAngle - Math.PI / 2, endAngle - Math.PI / 2, false);
     } else if (type === 'inner') {
-        ctx.arc(centerX, centerY, clockRadius * 0.5, startAngle, endAngle, false);
+        ctx.arc(centerX, centerY, clockRadius * 0.5, startAngle - Math.PI / 2, endAngle - Math.PI / 2, false);
     }
 
     ctx.closePath();
@@ -258,6 +279,6 @@ function drawDate(hourAngle) {
 }
 
 // Initialize clock
-setInterval(drawClock, 1000);
 updateCanvasSize();
+setInterval(drawClock, 1000);
 window.addEventListener('resize', updateCanvasSize);
