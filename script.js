@@ -82,10 +82,17 @@ function updateCanvasSize() {
 function drawClock() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw highlights
-    highlights.forEach((highlight) => drawHighlight(highlight));
+    // Step 1: Draw the outer fills first
+    highlights
+        .filter((highlight) => highlight.type === 'outer')
+        .forEach((highlight) => drawHighlight(highlight));
 
-    // Draw clock face
+    // Step 2: Draw the inner fills next
+    highlights
+        .filter((highlight) => highlight.type === 'inner')
+        .forEach((highlight) => drawHighlight(highlight));
+
+    // Step 3: Draw the clock face, ticks, and numbers
     drawCircle();
     drawTicks();
     if (showNumbers) drawNumbers();
@@ -96,19 +103,20 @@ function drawClock() {
     const minutes = currentTime.getMinutes();
     const hours = currentTime.getHours() % 12;
 
-    // Calculate angles for the hands
+    // Step 4: Calculate angles for the hands
     const secondAngle = seconds * 6;
     const minuteAngle = minutes * 6 + seconds * 0.1;
     const hourAngle = hours * 30 + minutes * 0.5;
 
-    // Draw clock hands
+    // Step 5: Draw clock hands
     drawHand(clockRadius * 0.7, hourAngle, hourHandColor, hourHandWidth);
     drawHand(clockRadius * 0.9, minuteAngle, minuteHandColor, minuteHandWidth);
     drawHand(clockRadius * 0.95, secondAngle, secondHandColor, secondHandWidth);
 
-    // Draw date
+    // Step 6: Draw the date
     drawDate(hourAngle);
 }
+
 
 function drawCircle() {
     ctx.beginPath();
