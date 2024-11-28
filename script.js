@@ -61,8 +61,8 @@ document.getElementById('addHighlightButton').addEventListener('click', () => {
     const color = document.getElementById('highlightColor').value;
     const type = document.querySelector('input[name="fillType"]:checked').value;
 
-    if (start < 1 || start > 12 || end < 1 || end > 12 || start === end) {
-        alert('Invalid time range! Select between 1 and 12.');
+    if (start < 0 || start > 12 || end < 0 || end > 12 || start === end) {
+        alert('Invalid time range! Select between 0 and 12.');
         return;
     }
 
@@ -84,7 +84,6 @@ function drawClock() {
 
     // Draw highlights
     highlights.forEach((highlight) => drawHighlight(highlight));
-
 
     // Draw clock face
     drawCircle();
@@ -140,11 +139,12 @@ function drawTicks() {
 function drawNumbers() {
     ctx.font = `${numberFontSize}px Arial`;
     ctx.fillStyle = 'black';
-    for (let i = 1; i <= 12; i++) {
-        const angle = Math.PI / 6 * (i - 3);
+    for (let i = 0; i < 12; i++) {
+        const angle = Math.PI / 6 * (i - 3); // Adjust calculation for clock position
         const x = centerX + clockRadius * 0.75 * Math.cos(angle);
         const y = centerY + clockRadius * 0.75 * Math.sin(angle);
-        ctx.fillText(i.toString(), x - numberFontSize / 3, y + numberFontSize / 3);
+        const number = i === 0 ? 12 : i; // Show 12 instead of 0
+        ctx.fillText(number.toString(), x - numberFontSize / 3, y + numberFontSize / 3);
     }
 }
 
@@ -162,8 +162,8 @@ function drawHand(length, angle, color, width) {
 }
 
 function drawHighlight({ start, end, color, type }) {
-    const startAngle = Math.PI / 6 * (start - 3);
-    const endAngle = Math.PI / 6 * (end - 3);
+    const startAngle = Math.PI / 6 * (start - 3); // Adjust start angle for 0-12 range
+    const endAngle = Math.PI / 6 * (end - 3); // Adjust end angle for 0-12 range
 
     ctx.beginPath();
     ctx.moveTo(centerX, centerY);
