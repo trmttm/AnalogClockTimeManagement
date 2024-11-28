@@ -66,7 +66,7 @@ document.getElementById('addHighlightButton').addEventListener('click', () => {
         return;
     }
 
-    highlights.push({ start, end, color, type });
+    highlights.push({start, end, color, type});
     drawClock();
 });
 
@@ -169,7 +169,7 @@ function drawHand(length, angle, color, width) {
     ctx.stroke();
 }
 
-function drawHighlight({ start, end, color, type }) {
+function drawHighlight({start, end, color, type}) {
     const startAngle = Math.PI / 6 * (start - 3); // Adjust start angle for 0-12 range
     const endAngle = Math.PI / 6 * (end - 3); // Adjust end angle for 0-12 range
 
