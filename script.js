@@ -304,6 +304,8 @@ function getClockState() {
         minuteHandWidth,
         secondHandWidth,
         numberFontSize,
+        showDate,
+        showNumbers,
         highlights: highlights.map((highlight) => ({
             start: highlight.start,
             end: highlight.end,
@@ -312,6 +314,7 @@ function getClockState() {
         }))
     };
 }
+
 
 
 // Initialize clock
