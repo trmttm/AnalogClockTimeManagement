@@ -3,7 +3,6 @@ const ctx = canvas.getContext('2d');
 const dateDisplay = document.getElementById('dateDisplay');
 
 const highlights = []; // Stores user-defined highlights
-const undoStack = []; // Stores previous states for undo
 const undoStack = [];
 const redoStack = [];
 
