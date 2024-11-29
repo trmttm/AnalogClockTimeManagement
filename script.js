@@ -277,6 +277,43 @@ function drawDate(hourAngle) {
     dateDisplay.style.display = showDate ? 'block' : 'none';
 }
 
+// Add an event listener for the "Export to JSON" button
+document.getElementById('exportJsonButton').addEventListener('click', () => {
+    const clockState = getClockState(); // Get the current clock state as an object
+    const jsonString = JSON.stringify(clockState, null, 2); // Convert the state to a JSON string
+
+    // Create a Blob with the JSON string (this is the file content)
+    const blob = new Blob([jsonString], { type: 'application/json' });
+
+    // Create a link element
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'clockState.json'; // Name of the exported file
+
+    // Programmatically click the link to trigger the download
+    link.click();
+});
+
+// Function to get the current state of the clock (hands, fills, etc.)
+function getClockState() {
+    return {
+        hourHandColor,
+        minuteHandColor,
+        secondHandColor,
+        hourHandWidth,
+        minuteHandWidth,
+        secondHandWidth,
+        numberFontSize,
+        highlights: highlights.map((highlight) => ({
+            start: highlight.start,
+            end: highlight.end,
+            color: highlight.color,
+            type: highlight.type,
+        }))
+    };
+}
+
+
 // Initialize clock
 updateCanvasSize();
 setInterval(drawClock, 1000);
