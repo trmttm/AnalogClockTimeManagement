@@ -294,6 +294,33 @@ document.getElementById('exportJsonButton').addEventListener('click', () => {
     link.click();
 });
 
+// Add an event listener for the "Import JSON" button
+document.getElementById('importJsonButton').addEventListener('click', () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json'; // Only accept JSON files
+
+    input.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file && file.type === 'application/json') {
+            const reader = new FileReader();
+            reader.onload = () => {
+                try {
+                    const clockState = JSON.parse(reader.result); // Parse the JSON string
+                    loadClockState(clockState); // Load the state into the clock
+                } catch (err) {
+                    alert('Error parsing the JSON file!');
+                }
+            };
+            reader.readAsText(file); // Read the file content
+        } else {
+            alert('Please select a valid JSON file.');
+        }
+    });
+
+    input.click(); // Trigger the file input dialog
+});
+
 // Function to get the current state of the clock (hands, fills, etc.)
 function getClockState() {
     return {
@@ -315,7 +342,33 @@ function getClockState() {
     };
 }
 
+// Function to load clock state from the imported JSON
+function loadClockState(clockState) {
+    // Update the clock state from the imported JSON
+    hourHandColor = clockState.hourHandColor || '#000000';
+    minuteHandColor = clockState.minuteHandColor || '#0000FF';
+    secondHandColor = clockState.secondHandColor || '#FF0000';
+    hourHandWidth = clockState.hourHandWidth || 6;
+    minuteHandWidth = clockState.minuteHandWidth || 4;
+    secondHandWidth = clockState.secondHandWidth || 2;
+    numberFontSize = clockState.numberFontSize || 14;
+    showDate = clockState.showDate !== undefined ? clockState.showDate : true;
+    showNumbers = clockState.showNumbers !== undefined ? clockState.showNumbers : true;
 
+    // Load highlights
+    highlights.length = 0; // Clear the current highlights
+    clockState.highlights.forEach((highlight) => {
+        highlights.push({
+            start: highlight.start,
+            end: highlight.end,
+            color: highlight.color,
+            type: highlight.type
+        });
+    });
+
+    // Redraw the clock with the imported state
+    drawClock();
+}
 
 // Initialize clock
 updateCanvasSize();
