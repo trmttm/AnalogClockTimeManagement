@@ -14,8 +14,8 @@ let showDate = true, showNumbers = true;
 let numberFontSize = 14;
 
 // Variables to handle recording
-let isRecording = false; // Tracks if recording is active
-let recordStartTime = null; // Time when recording started
+let isRecording = true; // Start with recording ON
+let recordStartTime = new Date(); // Set the current time as the recording start time
 let recordColor = '#FFA500'; // Default color for recording (can use highlightColor)
 
 // Add event listener for the "Record" button
