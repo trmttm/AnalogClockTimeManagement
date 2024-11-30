@@ -90,27 +90,18 @@ document.getElementById('addHighlightButton').addEventListener('click', () => {
     const startAngle = calculateAngle(startHour, startMinute);
     const endAngle = calculateAngle(adjustedEndHour, adjustedEndMinute);
 
-    // Special handling for boundary cases
-    if (startHour === 0 && startMinute === 0 && endHour === 12 && endMinute === 0) {
-        // Treat 0:00 - 12:00 as two segments
-        const almostMidday = calculateAngle(11, 59);
-        highlights.push({ start: startAngle, end: almostMidday, color, type: 'inner' });
-        highlights.push({ start: almostMidday, end: endAngle, color, type: 'inner' });
-    } else if (startHour === 12 && startMinute === 0 && endHour === 24 && endMinute === 0) {
-        // Treat 12:00 - 24:00 as two segments
-        const almostMidnight = calculateAngle(23, 59);
-        highlights.push({ start: startAngle, end: almostMidnight, color, type: 'outer' });
-        highlights.push({ start: almostMidnight, end: endAngle, color, type: 'outer' });
+    // Check if the range crosses 12:00
+    if (startHour < 12 && (endHour > 12 || (endHour === 12 && endMinute > 0))) {
+        // Split into two highlights
+        const middayAngle = calculateAngle(12, 0); // Angle for 12:00 PM
+        highlights.push({ start: startAngle, end: middayAngle, color, type: 'inner' }); // First part
+        highlights.push({ start: middayAngle, end: endAngle, color, type: 'outer' }); // Second part
     } else if (endHour <= 12) {
         // Normal case for inner fill (0:00 - 12:00 range)
         highlights.push({ start: startAngle, end: endAngle, color, type: 'inner' });
-    } else if (startHour >= 12) {
+    } else {
         // Normal case for outer fill (12:00 - 24:00 range)
         highlights.push({ start: startAngle, end: endAngle, color, type: 'outer' });
-    } else {
-        // Split the highlight into inner and outer
-        highlights.push({ start: startAngle, end: calculateAngle(11, 59), color, type: 'inner' });
-        highlights.push({ start: calculateAngle(12, 0), end: endAngle, color, type: 'outer' });
     }
 
     drawClock();
