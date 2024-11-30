@@ -195,7 +195,7 @@ button:hover {
 /* Activity button container styling */
 .activity-controls {
     position: absolute;
-    top: 10px;
+    top: 80px; /* Adjusted space to push it below the fixed buttons */
     right: 10px;
     width: 200px;
     background-color: white;
