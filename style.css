@@ -220,6 +220,19 @@ button:hover {
     opacity: 0.8;
 }
 
+/* Active button style */
+.activity-btn.active-button {
+    border: 3px solid #FFD700;  /* Gold border to indicate active button */
+    box-shadow: 0px 0px 15px rgba(255, 215, 0, 0.6);  /* Glowing effect around the button */
+    font-weight: bold;  /* Make the text bold for emphasis */
+    color: #fff;  /* Text color changes for contrast */
+}
+
+/* Optional: Hover effect for the active button */
+.activity-btn.active-button:hover {
+    opacity: 1;  /* Ensure hover doesn't override the active glow effect */
+}
+
 /* Input fields for changing text and color */
 input[type="text"], input[type="color"] {
     width: 100%;

@@ -94,31 +94,33 @@
 
     <div class="activity-controls">
         <h3>Activities</h3>
-        <div id="activityButtons">
-            <button class="activity-btn" id="btnSleep" data-color="#808080">Sleep</button>
-            <button class="activity-btn" id="btnWork" data-color="#FFFF00">Work</button>
-            <button class="activity-btn" id="btnExercise" data-color="#A52A2A">Exercise</button>
-            <button class="activity-btn" id="btnStudy" data-color="#00FF00">Study</button>
-            <button class="activity-btn" id="btnReading" data-color="#FF6347">Reading</button>
-            <button class="activity-btn" id="btnFamily" data-color="#4682B4">Family</button>
-            <button class="activity-btn" id="btnLeisure" data-color="#FFD700">Leisure</button>
-            <button class="activity-btn" id="btnHobby" data-color="#8A2BE2">Hobby</button>
-            <button class="activity-btn" id="btnMeeting" data-color="#FF4500">Meeting</button>
-            <button class="activity-btn" id="btnRelax" data-color="#3CB371">Relax</button>
+        <div class="activity-controls">
+            <h3>Activities</h3>
+            <!-- Buttons for changing highlight color -->
+            <div id="activityButtons">
+                <button class="activity-btn" id="Activity_btn_01" data-color="#808080">Sleep</button>
+                <button class="activity-btn" id="Activity_btn_02" data-color="#FFFF00">Work</button>
+                <button class="activity-btn" id="Activity_btn_03" data-color="#A52A2A">Exercise</button>
+                <button class="activity-btn" id="Activity_btn_04" data-color="#00FF00">Study</button>
+                <button class="activity-btn" id="Activity_btn_05" data-color="#FF6347">Reading</button>
+                <button class="activity-btn" id="Activity_btn_06" data-color="#4682B4">Family</button>
+                <button class="activity-btn" id="Activity_btn_07" data-color="#FFD700">Leisure</button>
+                <button class="activity-btn" id="Activity_btn_08" data-color="#8A2BE2">Hobby</button>
+                <button class="activity-btn" id="Activity_btn_09" data-color="#FF4500">Meeting</button>
+                <button class="activity-btn" id="Activity_btn_10" data-color="#3CB371">Relax</button>
+            </div>
+
+            <h3>Configure Activities</h3>
+            <label for="activityText">Activity Text:</label>
+            <input type="text" id="activityText" placeholder="Enter Activity Name">
+            <label for="activityColor">Activity Color:</label>
+            <input type="color" id="activityColor" value="#FF0000">
+            <button id="saveConfigButton">Save Config</button>
+            <button id="loadConfigButton">Load Config</button>
         </div>
 
-        <h3>Configure Activities</h3>
-        <label for="activityText">Activity Text:</label>
-        <input type="text" id="activityText" placeholder="Enter Activity Name">
-        <label for="activityColor">Activity Color:</label>
-        <input type="color" id="activityColor" value="#FF0000">
-        <button id="saveConfigButton">Save Config</button>
-        <button id="loadConfigButton">Load Config</button>
     </div>
 
-
-</div>
-
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

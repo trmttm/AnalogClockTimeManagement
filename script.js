@@ -461,16 +461,16 @@ let lastPressedButton = null;
 // Variables for activity buttons and their configurations
 const activityButtons = document.querySelectorAll('.activity-btn');
 let activitiesConfig = [
-    {id: 'btnSleep', color: '#808080', text: 'Sleep'},
-    {id: 'btnWork', color: '#FFFF00', text: 'Work'},
-    {id: 'btnExercise', color: '#A52A2A', text: 'Exercise'},
-    {id: 'btnStudy', color: '#00FF00', text: 'Study'},
-    {id: 'btnReading', color: '#FF6347', text: 'Reading'},
-    {id: 'btnFamily', color: '#4682B4', text: 'Family'},
-    {id: 'btnLeisure', color: '#FFD700', text: 'Leisure'},
-    {id: 'btnHobby', color: '#8A2BE2', text: 'Hobby'},
-    {id: 'btnMeeting', color: '#FF4500', text: 'Meeting'},
-    {id: 'btnRelax', color: '#3CB371', text: 'Relax'}
+    {id: 'Activity_btn_01', color: '#808080', text: 'Sleep'},
+    {id: 'Activity_btn_02', color: '#FFFF00', text: 'Work'},
+    {id: 'Activity_btn_03', color: '#A52A2A', text: 'Exercise'},
+    {id: 'Activity_btn_04', color: '#00FF00', text: 'Study'},
+    {id: 'Activity_btn_05', color: '#FF6347', text: 'Reading'},
+    {id: 'Activity_btn_06', color: '#4682B4', text: 'Family'},
+    {id: 'Activity_btn_07', color: '#FFD700', text: 'Leisure'},
+    {id: 'Activity_btn_08', color: '#8A2BE2', text: 'Hobby'},
+    {id: 'Activity_btn_09', color: '#FF4500', text: 'Meeting'},
+    {id: 'Activity_btn_10', color: '#3CB371', text: 'Relax'}
 ];
 
 // Initialize the buttons with the saved configuration
@@ -543,3 +543,4 @@ document.getElementById('loadConfigButton').addEventListener('click', () => {
 
 // Initialize buttons on page load
 initActivityButtons();
+
