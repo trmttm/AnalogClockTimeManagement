@@ -71,9 +71,8 @@ document.getElementById('addHighlightButton').addEventListener('click', () => {
 
     // Validate time ranges (ensure start time is before end time)
     if (
-        (startHour < 0 || startHour > 23) ||
+        (startHour < 0 || startHour > 23 || (endHour < 0 || endHour > 24)) ||
         (startMinute < 0 || startMinute > 59) ||
-        (endHour < 0 || endHour > 23) ||
         (endMinute < 0 || endMinute > 59) ||
         (startHour > endHour || (startHour === endHour && startMinute >= endMinute))
     ) {
@@ -83,9 +82,13 @@ document.getElementById('addHighlightButton').addEventListener('click', () => {
 
     saveStateToUndoStack();
     redoStack.length = 0; // Clear the redo stack
+    // Handle 24:00 as a valid end time (convert it to 0:00 of the next day)
+    const adjustedEndHour = endHour === 24 ? 0 : endHour;
+    const adjustedEndMinute = endHour === 24 ? 0 : endMinute;
+
     // Convert start and end time to angles
     const startAngle = calculateAngle(startHour, startMinute);
-    const endAngle = calculateAngle(endHour, endMinute);
+    const endAngle = calculateAngle(adjustedEndHour, adjustedEndMinute);
 
     // Special handling for boundary cases
     if (startHour === 0 && startMinute === 0 && endHour === 12 && endMinute === 0) {
