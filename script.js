@@ -87,7 +87,6 @@ document.getElementById('addHighlightButton').addEventListener('click', () => {
     const startAngle = calculateAngle(startHour, startMinute);
     const endAngle = calculateAngle(endHour, endMinute);
 
-    // Handle the time range split for 12:00
     // Special handling for boundary cases
     if (startHour === 0 && startMinute === 0 && endHour === 12 && endMinute === 0) {
         // Treat 0:00 - 12:00 as two segments
