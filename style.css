@@ -161,3 +161,20 @@ button:hover {
 .controls.hidden {
     display: none;
 }
+
+/* Toggle button styling */
+.toggle-button {
+    background-color: #ccc;
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.toggle-button.active {
+    background-color: #007BFF;
+    color: white;
+}

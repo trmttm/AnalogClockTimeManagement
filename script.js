@@ -13,6 +13,30 @@ let hourHandWidth = 6, minuteHandWidth = 4, secondHandWidth = 2;
 let showDate = true, showNumbers = true;
 let numberFontSize = 14;
 
+// Variables to handle recording
+let isRecording = false; // Tracks if recording is active
+let recordStartTime = null; // Time when recording started
+let recordColor = '#FFA500'; // Default color for recording (can use highlightColor)
+
+// Add event listener for the "Record" button
+document.getElementById('recordButton').addEventListener('click', () => {
+    const recordButton = document.getElementById('recordButton');
+    isRecording = !isRecording; // Toggle recording state
+
+    if (isRecording) {
+        // Start recording
+        recordStartTime = new Date(); // Set the start time
+        recordColor = document.getElementById('highlightColor').value; // Use selected highlight color
+        recordButton.classList.add('active');
+        recordButton.textContent = 'Record: On';
+    } else {
+        // Stop recording
+        recordStartTime = null; // Clear the start time
+        recordButton.classList.remove('active');
+        recordButton.textContent = 'Record: Off';
+    }
+});
+
 // Event listeners for sliders and color pickers
 document.getElementById('hourWidth').addEventListener('input', (e) => {
     hourHandWidth = e.target.value;
@@ -171,7 +195,7 @@ function updateCanvasSize() {
     drawClock();
 }
 
-// Draw the clock (updated to handle dynamic state)
+// Update the drawClock function to include recording highlights
 function drawClock() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -183,6 +207,15 @@ function drawClock() {
     highlights
         .filter((highlight) => highlight.type === 'inner')
         .forEach((highlight) => drawHighlight(highlight));
+
+    // Handle dynamic recording highlight
+    if (isRecording && recordStartTime) {
+        const currentTime = new Date();
+        const startAngle = calculateAngle(recordStartTime.getHours(), recordStartTime.getMinutes());
+        const endAngle = calculateAngle(currentTime.getHours(), currentTime.getMinutes());
+        const type = currentTime.getHours() >= 12 ? 'outer' : 'inner'; // Determine if inner or outer fill
+        drawHighlight({ start: startAngle, end: endAngle, color: recordColor, type });
+    }
 
     // Draw the clock face, ticks, and numbers
     drawCircle();
