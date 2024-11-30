@@ -455,6 +455,9 @@ updateCanvasSize();
 setInterval(drawClock, 1000);
 window.addEventListener('resize', updateCanvasSize);
 
+// Variable to store the currently active activity button
+let lastPressedButton = null;
+
 // Variables for activity buttons and their configurations
 const activityButtons = document.querySelectorAll('.activity-btn');
 let activitiesConfig = [
@@ -491,6 +494,13 @@ function initActivityButtons() {
             } else {
                 recordColor = activity.color; // Set color for new highlight
             }
+
+            // Track the last pressed button and visually highlight it
+            if (lastPressedButton) {
+                lastPressedButton.classList.remove('active-button'); // Remove previous highlight
+            }
+            lastPressedButton = button; // Store the last pressed button
+            lastPressedButton.classList.add('active-button'); // Add highlight to the current button
         });
     });
 }
@@ -527,4 +537,5 @@ function saveConfigToLocalStorage() {
 
 // Initialize buttons on page load
 initActivityButtons();
+
 
