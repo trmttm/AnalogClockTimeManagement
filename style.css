@@ -136,3 +136,28 @@ button:hover {
 .controls input[type="color"] {
     margin-left: 10px; /* Add margin for better alignment with labels */
 }
+
+/* Hamburger Button */
+.hamburger-button {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 24px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 10; /* Ensure it appears above other elements */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.hamburger-button:hover {
+    background-color: #0056b3;
+}
+
+/* Hide the controls when toggled */
+.controls.hidden {
+    display: none;
+}

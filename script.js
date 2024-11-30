@@ -370,6 +370,12 @@ function loadClockState(clockState) {
     drawClock();
 }
 
+// Toggle clock controls with the hamburger button
+document.getElementById('hamburgerButton').addEventListener('click', () => {
+    const controls = document.querySelector('.controls');
+    controls.classList.toggle('hidden'); // Add/remove the "hidden" class
+});
+
 // Initialize clock
 updateCanvasSize();
 setInterval(drawClock, 1000);
