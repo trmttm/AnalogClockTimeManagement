@@ -117,3 +117,22 @@ button:hover {
     flex: 1;
     margin: 0 5px;
 }
+
+.controls label {
+    display: inline-block;
+    width: 120px; /* Set a fixed width for labels */
+    text-align: left; /* Align text to the left */
+    margin-right: 10px; /* Add spacing between label and input */
+}
+
+.controls input[type="number"] {
+    width: 100px; /* Set consistent width for the text boxes */
+    padding: 5px; /* Add padding for better readability */
+    margin-bottom: 10px; /* Add spacing below the input boxes */
+    box-sizing: border-box; /* Ensure consistent box model */
+    font-size: 14px; /* Match font size with labels */
+}
+
+.controls input[type="color"] {
+    margin-left: 10px; /* Add margin for better alignment with labels */
+}
