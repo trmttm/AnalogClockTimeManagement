@@ -137,7 +137,17 @@ button:hover {
     margin-left: 10px; /* Add margin for better alignment with labels */
 }
 
-/* Style for the hamburger button */
+/* Container for the hamburger and activities buttons */
+.top-buttons {
+    position: fixed; /* Fix them to the top right */
+    top: 10px; /* Space from the top */
+    right: 10px; /* Space from the right */
+    display: flex; /* Use flexbox to stack buttons horizontally */
+    gap: 10px; /* Space between the buttons */
+    z-index: 1000; /* Ensure the buttons are above other elements */
+}
+
+/* Style for the hamburger and activities buttons */
 #hamburgerButton, #activitiesButton {
     background-color: #007BFF;
     color: white;
@@ -145,7 +155,6 @@ button:hover {
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
-    margin-right: 10px; /* Space between buttons */
     font-size: 16px;
 }
 

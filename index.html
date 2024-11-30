@@ -6,103 +6,110 @@
     <title>Dynamic Clock</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-<!-- Hamburger Button -->
-<button id="hamburgerButton" class="hamburger-button">☰</button>
-<!-- Activities button next to hamburger -->
-<button id="activitiesButton" class="toggle-button">Activities</button>
+    <body>
 
-<div class="wrapper">
-    <!-- Control Panel -->
-    <div class="controls">
-        <h3>Clock Controls</h3>
+        <!-- Container for the hamburger and activities buttons -->
+        <div class="top-buttons">
+            <!-- Hamburger button -->
+            <button id="hamburgerButton" class="toggle-button">
+                &#9776;
+            </button>
 
-        <button id="recordButton" class="toggle-button active">Record: On</button>
-
-        <!-- Width and Color Sliders -->
-        <label for="hourWidth">Hour Hand Width:</label>
-        <input type="range" id="hourWidth" min="1" max="10" value="6">
-        <br>
-
-        <label for="minuteWidth">Minute Hand Width:</label>
-        <input type="range" id="minuteWidth" min="1" max="10" value="4">
-        <br>
-
-        <label for="secondWidth">Second Hand Width:</label>
-        <input type="range" id="secondWidth" min="1" max="10" value="2">
-        <br>
-
-        <label for="numberSize">Number Size:</label>
-        <input type="range" id="numberSize" min="10" max="50" value="14">
-        <br>
-
-        <label for="hourColor">Hour Hand Color:</label>
-        <input type="color" id="hourColor" value="#000000">
-        <br>
-
-        <label for="minuteColor">Minute Hand Color:</label>
-        <input type="color" id="minuteColor" value="#0000FF">
-        <br>
-
-        <label for="secondColor">Second Hand Color:</label>
-        <input type="color" id="secondColor" value="#FF0000">
-        <br>
-
-        <!-- Highlight Controls -->
-        <h3>Highlight Controls</h3>
-        <label for="startTimeHour">Start Hour (0-23):</label>
-        <input type="number" id="startTimeHour" min="0" max="23" value="0">
-        <label for="startTimeMinute">Start Minute (0-59):</label>
-        <input type="number" id="startTimeMinute" min="0" max="59" value="0">
-        <br>
-
-        <label for="endTimeHour">End Hour (0-24):</label>
-        <input type="number" id="endTimeHour" min="0" max="24" value="1">
-        <label for="endTimeMinute">End Minute (0-59):</label>
-        <input type="number" id="endTimeMinute" min="0" max="59" value="0">
-        <br>
-
-
-        <label for="highlightColor">Highlight Color:</label>
-        <input type="color" id="highlightColor" value="#00FF00">
-        <br>
-
-        <!-- Add and Reset Highlights (Stacked Horizontally) -->
-        <div class="button-group">
-            <button id="addHighlightButton">Add Highlight</button>
-            <button id="resetButton">Reset Highlights</button>
+            <!-- Activities button next to hamburger -->
+            <button id="activitiesButton" class="toggle-button">Activities</button>
         </div>
 
-        <!-- Undo and Redo Buttons (Stacked Horizontally) -->
-        <div class="button-group">
-            <button id="undoButton">Undo</button>
-            <button id="redoButton">Redo</button>
-        </div>
+        <div class="wrapper">
+            <!-- Control Panel -->
+            <div class="controls">
+                <h3>Clock Controls</h3>
 
-        <br>
-        <button id="toggleDateButton">Toggle Date</button>
-        <br>
-        <button id="toggleNumbersButton">Toggle Numbers</button>
-        <br>
-        <button id="exportJsonButton">Export to JSON</button>
-        <button id="importJsonButton">Import JSON</button>
-    </div>
+                <button id="recordButton" class="toggle-button active">Record: On</button>
 
-    <!-- Clock Canvas -->
-    <div class="clock-container">
-        <canvas id="clockCanvas"></canvas>
-        <div id="dateDisplay"></div>
-    </div>
+                <!-- Width and Color Sliders -->
+                <label for="hourWidth">Hour Hand Width:</label>
+                <input type="range" id="hourWidth" min="1" max="10" value="6">
+                <br>
 
-    <div class="activity-controls">
-        <h3>Activities</h3>
-        <div id="activityButtons"></div> <!-- Buttons will be generated here -->
+                <label for="minuteWidth">Minute Hand Width:</label>
+                <input type="range" id="minuteWidth" min="1" max="10" value="4">
+                <br>
 
-        <button id="saveConfigButton">Save Config</button>
-        <button id="loadConfigButton">Load Config</button>
-    </div>
+                <label for="secondWidth">Second Hand Width:</label>
+                <input type="range" id="secondWidth" min="1" max="10" value="2">
+                <br>
+
+                <label for="numberSize">Number Size:</label>
+                <input type="range" id="numberSize" min="10" max="50" value="14">
+                <br>
+
+                <label for="hourColor">Hour Hand Color:</label>
+                <input type="color" id="hourColor" value="#000000">
+                <br>
+
+                <label for="minuteColor">Minute Hand Color:</label>
+                <input type="color" id="minuteColor" value="#0000FF">
+                <br>
+
+                <label for="secondColor">Second Hand Color:</label>
+                <input type="color" id="secondColor" value="#FF0000">
+                <br>
+
+                <!-- Highlight Controls -->
+                <h3>Highlight Controls</h3>
+                <label for="startTimeHour">Start Hour (0-23):</label>
+                <input type="number" id="startTimeHour" min="0" max="23" value="0">
+                <label for="startTimeMinute">Start Minute (0-59):</label>
+                <input type="number" id="startTimeMinute" min="0" max="59" value="0">
+                <br>
+
+                <label for="endTimeHour">End Hour (0-24):</label>
+                <input type="number" id="endTimeHour" min="0" max="24" value="1">
+                <label for="endTimeMinute">End Minute (0-59):</label>
+                <input type="number" id="endTimeMinute" min="0" max="59" value="0">
+                <br>
 
 
-    <script src="script.js"></script>
-</body>
+                <label for="highlightColor">Highlight Color:</label>
+                <input type="color" id="highlightColor" value="#00FF00">
+                <br>
+
+                <!-- Add and Reset Highlights (Stacked Horizontally) -->
+                <div class="button-group">
+                    <button id="addHighlightButton">Add Highlight</button>
+                    <button id="resetButton">Reset Highlights</button>
+                </div>
+
+                <!-- Undo and Redo Buttons (Stacked Horizontally) -->
+                <div class="button-group">
+                    <button id="undoButton">Undo</button>
+                    <button id="redoButton">Redo</button>
+                </div>
+
+                <br>
+                <button id="toggleDateButton">Toggle Date</button>
+                <br>
+                <button id="toggleNumbersButton">Toggle Numbers</button>
+                <br>
+                <button id="exportJsonButton">Export to JSON</button>
+                <button id="importJsonButton">Import JSON</button>
+            </div>
+
+            <!-- Clock Canvas -->
+            <div class="clock-container">
+                <canvas id="clockCanvas"></canvas>
+                <div id="dateDisplay"></div>
+            </div>
+
+            <div class="activity-controls">
+                <h3>Activities</h3>
+                <div id="activityButtons"></div> <!-- Buttons will be generated here -->
+
+                <button id="saveConfigButton">Save Config</button>
+                <button id="loadConfigButton">Load Config</button>
+            </div>
+
+
+            <script src="script.js"></script>
+    </body>
 </html>
