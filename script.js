@@ -505,10 +505,10 @@ function initActivityButtons() {
     });
 }
 
-// Function to update activity color and text dynamically
+// Update the event listener for 'saveConfigButton' as follows:
 document.getElementById('saveConfigButton').addEventListener('click', () => {
     const configData = JSON.stringify(activitiesConfig, null, 2); // Convert to JSON format
-    const blob = new Blob([configData], {type: 'application/json'});
+    const blob = new Blob([configData], { type: 'application/json' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = 'activities_config.json'; // Set default file name
