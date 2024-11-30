@@ -458,18 +458,24 @@ window.addEventListener('resize', updateCanvasSize);
 // Variable to store the currently active activity button
 let lastPressedButton = null;
 
+// Toggle visibility of the activity buttons
+document.getElementById('activitiesButton').addEventListener('click', () => {
+    const activityControls = document.querySelector('.activity-controls');
+    activityControls.classList.toggle('hidden'); // Toggle the 'hidden' class to show/hide the buttons
+});
+
 // Variables for activity buttons and their configurations
 let activitiesConfig = [
-    {id: 'Activity_btn_01', color: '#808080', text: 'Sleep'},
-    {id: 'Activity_btn_02', color: '#FFFF00', text: 'Work'},
-    {id: 'Activity_btn_03', color: '#A52A2A', text: 'Exercise'},
-    {id: 'Activity_btn_04', color: '#00FF00', text: 'Study'},
-    {id: 'Activity_btn_05', color: '#FF6347', text: 'Reading'},
-    {id: 'Activity_btn_06', color: '#4682B4', text: 'Family'},
-    {id: 'Activity_btn_07', color: '#FFD700', text: 'Leisure'},
-    {id: 'Activity_btn_08', color: '#8A2BE2', text: 'Hobby'},
-    {id: 'Activity_btn_09', color: '#FF4500', text: 'Meeting'},
-    {id: 'Activity_btn_10', color: '#3CB371', text: 'Relax'}
+    { id: 'Activity_btn_01', color: '#808080', text: 'Sleep' },
+    { id: 'Activity_btn_02', color: '#FFFF00', text: 'Work' },
+    { id: 'Activity_btn_03', color: '#A52A2A', text: 'Exercise' },
+    { id: 'Activity_btn_04', color: '#00FF00', text: 'Study' },
+    { id: 'Activity_btn_05', color: '#FF6347', text: 'Reading' },
+    { id: 'Activity_btn_06', color: '#4682B4', text: 'Family' },
+    { id: 'Activity_btn_07', color: '#FFD700', text: 'Leisure' },
+    { id: 'Activity_btn_08', color: '#8A2BE2', text: 'Hobby' },
+    { id: 'Activity_btn_09', color: '#FF4500', text: 'Meeting' },
+    { id: 'Activity_btn_10', color: '#3CB371', text: 'Relax' }
 ];
 
 // Dynamically generate activity buttons based on activitiesConfig
@@ -516,7 +522,7 @@ function generateActivityButtons() {
 // Function to save the configuration to a JSON file
 document.getElementById('saveConfigButton').addEventListener('click', () => {
     const configData = JSON.stringify(activitiesConfig, null, 2); // Convert to JSON format
-    const blob = new Blob([configData], {type: 'application/json'});
+    const blob = new Blob([configData], { type: 'application/json' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = 'activities_config.json'; // Set default file name

@@ -137,25 +137,23 @@ button:hover {
     margin-left: 10px; /* Add margin for better alignment with labels */
 }
 
-/* Hamburger Button */
-.hamburger-button {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    font-size: 24px;
+/* Style for the hamburger button */
+#hamburgerButton, #activitiesButton {
     background-color: #007BFF;
     color: white;
     border: none;
+    padding: 10px 20px;
     border-radius: 5px;
-    padding: 10px;
     cursor: pointer;
-    z-index: 10; /* Ensure it appears above other elements */
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    margin-right: 10px; /* Space between buttons */
+    font-size: 16px;
 }
 
-.hamburger-button:hover {
+/* Hover effect for the buttons */
+#hamburgerButton:hover, #activitiesButton:hover {
     background-color: #0056b3;
 }
+
 
 /* Hide the controls when toggled */
 .controls.hidden {
@@ -185,7 +183,7 @@ button:hover {
     background-color: #0056b3; /* Darker blue on hover */
 }
 
-/* Right-hand activity controls */
+/* Activity button container styling */
 .activity-controls {
     position: absolute;
     top: 10px;
@@ -195,9 +193,15 @@ button:hover {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    display: block; /* Show by default */
 }
 
-/* Activity buttons styling */
+/* Hide the activity controls by default when toggled */
+.activity-controls.hidden {
+    display: none;
+}
+
+/* Rest of the existing activity button styles */
 .activity-btn {
     width: 100%;
     padding: 10px;
