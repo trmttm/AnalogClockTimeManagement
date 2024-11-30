@@ -459,7 +459,6 @@ window.addEventListener('resize', updateCanvasSize);
 let lastPressedButton = null;
 
 // Variables for activity buttons and their configurations
-const activityButtons = document.querySelectorAll('.activity-btn');
 let activitiesConfig = [
     {id: 'Activity_btn_01', color: '#808080', text: 'Sleep'},
     {id: 'Activity_btn_02', color: '#FFFF00', text: 'Work'},
@@ -473,10 +472,16 @@ let activitiesConfig = [
     {id: 'Activity_btn_10', color: '#3CB371', text: 'Relax'}
 ];
 
-// Initialize the buttons with the saved configuration
-function initActivityButtons() {
-    activityButtons.forEach(button => {
-        const activity = activitiesConfig.find(a => a.id === button.id);
+// Dynamically generate activity buttons based on activitiesConfig
+function generateActivityButtons() {
+    const activityButtonsContainer = document.getElementById('activityButtons');
+    activityButtonsContainer.innerHTML = ''; // Clear any existing buttons
+
+    activitiesConfig.forEach((activity, index) => {
+        // Create button element
+        const button = document.createElement('button');
+        button.classList.add('activity-btn');
+        button.id = activity.id;
         button.style.backgroundColor = activity.color;
         button.textContent = activity.text;
 
@@ -502,10 +507,13 @@ function initActivityButtons() {
             lastPressedButton = button; // Store the last pressed button
             lastPressedButton.classList.add('active-button'); // Add highlight to the current button
         });
+
+        // Append the new button to the container
+        activityButtonsContainer.appendChild(button);
     });
 }
 
-// Save the current configuration to a JSON file
+// Function to save the configuration to a JSON file
 document.getElementById('saveConfigButton').addEventListener('click', () => {
     const configData = JSON.stringify(activitiesConfig, null, 2); // Convert to JSON format
     const blob = new Blob([configData], {type: 'application/json'});
@@ -515,7 +523,7 @@ document.getElementById('saveConfigButton').addEventListener('click', () => {
     link.click(); // Trigger download
 });
 
-// Load configuration from a JSON file
+// Function to load configuration from a JSON file
 document.getElementById('loadConfigButton').addEventListener('click', () => {
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
@@ -529,7 +537,7 @@ document.getElementById('loadConfigButton').addEventListener('click', () => {
                 try {
                     const config = JSON.parse(reader.result); // Parse the JSON file
                     activitiesConfig = config; // Update the activitiesConfig
-                    initActivityButtons(); // Reinitialize buttons with the new configuration
+                    generateActivityButtons(); // Reinitialize buttons with the new configuration
                 } catch (error) {
                     alert('Invalid JSON format.');
                 }
@@ -542,4 +550,4 @@ document.getElementById('loadConfigButton').addEventListener('click', () => {
 });
 
 // Initialize buttons on page load
-initActivityButtons();
+generateActivityButtons();
