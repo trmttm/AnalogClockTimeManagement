@@ -68,11 +68,11 @@ document.getElementById('addHighlightButton').addEventListener('click', () => {
     const endMinute = parseInt(document.getElementById('endTimeMinute').value, 10);
     const color = document.getElementById('highlightColor').value;
 
-    // Validate time ranges
+    // Validate time ranges (ensure start time is before end time)
     if (
         (startHour < 0 || startHour > 23) ||
-        (endHour < 0 || endHour > 23) ||
         (startMinute < 0 || startMinute > 59) ||
+        (endHour < 0 || endHour > 23) ||
         (endMinute < 0 || endMinute > 59) ||
         (startHour > endHour || (startHour === endHour && startMinute >= endMinute))
     ) {
@@ -86,15 +86,17 @@ document.getElementById('addHighlightButton').addEventListener('click', () => {
     const startAngle = calculateAngle(startHour, startMinute);
     const endAngle = calculateAngle(endHour, endMinute);
 
-    // Add highlight to the list (inner or outer based on time)
+    // Handle the time range split for 12:00
     if (endHour <= 12) {
-        highlights.push({start: startAngle, end: endAngle, color, type: 'inner'});
+        // Entirely in the inner half (0-12)
+        highlights.push({ start: startAngle, end: endAngle, color, type: 'inner' });
     } else if (startHour >= 12) {
-        highlights.push({start: startAngle, end: endAngle, color, type: 'outer'});
+        // Entirely in the outer half (12-24)
+        highlights.push({ start: startAngle, end: endAngle, color, type: 'outer' });
     } else {
-        // Split the highlight into inner and outer
-        highlights.push({start: startAngle, end: 12 * Math.PI, color, type: 'inner'});
-        highlights.push({start: 12 * Math.PI, end: endAngle, color, type: 'outer'});
+        // Split the range into inner and outer
+        highlights.push({ start: startAngle, end: 12 * Math.PI, color, type: 'inner' }); // 0:00 - 12:00
+        highlights.push({ start: 12 * Math.PI, end: endAngle, color, type: 'outer' }); // 12:00 - 24:00
     }
 
     drawClock();
@@ -102,6 +104,7 @@ document.getElementById('addHighlightButton').addEventListener('click', () => {
 
 // Function to calculate the angle based on the hour and minute
 function calculateAngle(hour, minute) {
+    // Adjust the calculation so it handles 12:00 as the boundary
     const totalMinutes = (hour % 12) * 60 + minute; // Convert time to total minutes past 12 AM
     return (totalMinutes / 720) * 2 * Math.PI; // Map total minutes to radians (0-2π)
 }
@@ -170,11 +173,11 @@ function drawClock() {
 
     // Step 1: Draw highlights (outer first, inner second)
     highlights
-        .filter((highlight) => highlight.type === 'outer')  // Draw outer first
+        .filter((highlight) => highlight.type === 'outer')
         .forEach((highlight) => drawHighlight(highlight));
 
     highlights
-        .filter((highlight) => highlight.type === 'inner')  // Draw inner second
+        .filter((highlight) => highlight.type === 'inner')
         .forEach((highlight) => drawHighlight(highlight));
 
     // Step 2: Draw the clock face, ticks, and numbers
@@ -257,7 +260,7 @@ function drawHand(length, angle, color, width) {
 }
 
 // Draw a highlight (updated to use angles)
-function drawHighlight({start, end, color, type}) {
+function drawHighlight({ start, end, color, type }) {
     ctx.beginPath();
     ctx.moveTo(centerX, centerY);
 
