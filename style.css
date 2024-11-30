@@ -164,7 +164,7 @@ button:hover {
 
 /* Toggle button styling */
 .toggle-button {
-    background-color: #ccc;  /* Default off state */
+    background-color: #ccc; /* Default off state */
     color: black;
     border: none;
     padding: 10px 20px;
@@ -177,10 +177,10 @@ button:hover {
 
 /* Active state when Record is ON */
 .toggle-button.active {
-    background-color: #007BFF;  /* Blue background for active (on) state */
-    color: white;  /* White text for active state */
+    background-color: #007BFF; /* Blue background for active (on) state */
+    color: white; /* White text for active state */
 }
 
 .toggle-button:hover {
-    background-color: #0056b3;  /* Darker blue on hover */
+    background-color: #0056b3; /* Darker blue on hover */
 }

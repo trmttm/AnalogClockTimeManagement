@@ -45,7 +45,7 @@ function toggleRecord() {
         const type = recordStartTime.getHours() >= 12 ? 'outer' : 'inner'; // Determine inner or outer
 
         // Save the completed recording as a highlight
-        highlights.push({ start: startAngle, end: endAngle, color: recordColor, type });
+        highlights.push({start: startAngle, end: endAngle, color: recordColor, type});
 
         // Reset recording state
         isRecording = false;
@@ -145,14 +145,14 @@ document.getElementById('addHighlightButton').addEventListener('click', () => {
     if (startHour < 12 && (endHour > 12 || (endHour === 12 && endMinute > 0))) {
         // Split into two highlights
         const middayAngle = calculateAngle(12, 0); // Angle for 12:00 PM
-        highlights.push({ start: startAngle, end: middayAngle, color, type: 'inner' }); // First part
-        highlights.push({ start: middayAngle, end: endAngle, color, type: 'outer' }); // Second part
+        highlights.push({start: startAngle, end: middayAngle, color, type: 'inner'}); // First part
+        highlights.push({start: middayAngle, end: endAngle, color, type: 'outer'}); // Second part
     } else if (endHour <= 12) {
         // Normal case for inner fill (0:00 - 12:00 range)
-        highlights.push({ start: startAngle, end: endAngle, color, type: 'inner' });
+        highlights.push({start: startAngle, end: endAngle, color, type: 'inner'});
     } else {
         // Normal case for outer fill (12:00 - 24:00 range)
-        highlights.push({ start: startAngle, end: endAngle, color, type: 'outer' });
+        highlights.push({start: startAngle, end: endAngle, color, type: 'outer'});
     }
 
     drawClock();
@@ -241,7 +241,7 @@ function drawClock() {
         const startAngle = calculateAngle(recordStartTime.getHours(), recordStartTime.getMinutes());
         const endAngle = calculateAngle(currentTime.getHours(), currentTime.getMinutes());
         const type = recordStartTime.getHours() >= 12 ? 'outer' : 'inner'; // Determine inner or outer
-        drawHighlight({ start: startAngle, end: endAngle, color: recordColor, type });
+        drawHighlight({start: startAngle, end: endAngle, color: recordColor, type});
     }
 
     // Draw the clock face, ticks, and numbers
@@ -323,7 +323,7 @@ function drawHand(length, angle, color, width) {
 }
 
 // Draw a highlight (updated to use angles)
-function drawHighlight({ start, end, color, type }) {
+function drawHighlight({start, end, color, type}) {
     ctx.beginPath();
     ctx.moveTo(centerX, centerY);
 
