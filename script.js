@@ -21,20 +21,33 @@ let recordColor = '#FFA500'; // Default color for recording (can use highlightCo
 // Add event listener for the "Record" button
 document.getElementById('recordButton').addEventListener('click', () => {
     const recordButton = document.getElementById('recordButton');
-    isRecording = !isRecording; // Toggle recording state
+    const currentTime = new Date(); // Get the current time when toggling
 
     if (isRecording) {
-        // Start recording
-        recordStartTime = new Date(); // Set the start time
-        recordColor = document.getElementById('highlightColor').value; // Use selected highlight color
-        recordButton.classList.add('active');
-        recordButton.textContent = 'Record: On';
-    } else {
-        // Stop recording
-        recordStartTime = null; // Clear the start time
+        // Record is being toggled OFF
+        const recordEndTime = currentTime;
+        const startAngle = calculateAngle(recordStartTime.getHours(), recordStartTime.getMinutes());
+        const endAngle = calculateAngle(recordEndTime.getHours(), recordEndTime.getMinutes());
+        const type = recordStartTime.getHours() >= 12 ? 'outer' : 'inner'; // Determine inner or outer
+
+        // Save the completed recording as a highlight
+        highlights.push({ start: startAngle, end: endAngle, color: recordColor, type });
+
+        // Reset recording state
+        isRecording = false;
+        recordStartTime = null;
         recordButton.classList.remove('active');
         recordButton.textContent = 'Record: Off';
+    } else {
+        // Record is being toggled ON
+        recordStartTime = currentTime; // Set the new recording start time
+        recordColor = document.getElementById('highlightColor').value; // Use the currently selected color
+        isRecording = true;
+        recordButton.classList.add('active');
+        recordButton.textContent = 'Record: On';
     }
+
+    drawClock(); // Redraw the clock to reflect any changes
 });
 
 // Event listeners for sliders and color pickers
@@ -199,7 +212,7 @@ function updateCanvasSize() {
 function drawClock() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw highlights (outer first, then inner)
+    // Draw saved highlights (outer first, then inner)
     highlights
         .filter((highlight) => highlight.type === 'outer')
         .forEach((highlight) => drawHighlight(highlight));
@@ -213,7 +226,7 @@ function drawClock() {
         const currentTime = new Date();
         const startAngle = calculateAngle(recordStartTime.getHours(), recordStartTime.getMinutes());
         const endAngle = calculateAngle(currentTime.getHours(), currentTime.getMinutes());
-        const type = currentTime.getHours() >= 12 ? 'outer' : 'inner'; // Determine if inner or outer fill
+        const type = recordStartTime.getHours() >= 12 ? 'outer' : 'inner'; // Determine inner or outer
         drawHighlight({ start: startAngle, end: endAngle, color: recordColor, type });
     }
 
