@@ -62,6 +62,7 @@ document.getElementById('toggleNumbersButton').addEventListener('click', () => {
 
 // Add an event listener for the "Add Highlight" button
 document.getElementById('addHighlightButton').addEventListener('click', () => {
+    // Get the values of the start and end time inputs
     const startHour = parseInt(document.getElementById('startTimeHour').value, 10);
     const startMinute = parseInt(document.getElementById('startTimeMinute').value, 10);
     const endHour = parseInt(document.getElementById('endTimeHour').value, 10);
@@ -87,16 +88,27 @@ document.getElementById('addHighlightButton').addEventListener('click', () => {
     const endAngle = calculateAngle(endHour, endMinute);
 
     // Handle the time range split for 12:00
-    if (endHour <= 12) {
-        // Entirely in the inner half (0-12)
+    // Special handling for boundary cases
+    if (startHour === 0 && startMinute === 0 && endHour === 12 && endMinute === 0) {
+        // Treat 0:00 - 12:00 as two segments
+        const almostMidday = calculateAngle(11, 59);
+        highlights.push({ start: startAngle, end: almostMidday, color, type: 'inner' });
+        highlights.push({ start: almostMidday, end: endAngle, color, type: 'inner' });
+    } else if (startHour === 12 && startMinute === 0 && endHour === 24 && endMinute === 0) {
+        // Treat 12:00 - 24:00 as two segments
+        const almostMidnight = calculateAngle(23, 59);
+        highlights.push({ start: startAngle, end: almostMidnight, color, type: 'outer' });
+        highlights.push({ start: almostMidnight, end: endAngle, color, type: 'outer' });
+    } else if (endHour <= 12) {
+        // Normal case for inner fill (0:00 - 12:00 range)
         highlights.push({ start: startAngle, end: endAngle, color, type: 'inner' });
     } else if (startHour >= 12) {
-        // Entirely in the outer half (12-24)
+        // Normal case for outer fill (12:00 - 24:00 range)
         highlights.push({ start: startAngle, end: endAngle, color, type: 'outer' });
     } else {
-        // Split the range into inner and outer
-        highlights.push({ start: startAngle, end: 12 * Math.PI, color, type: 'inner' }); // 0:00 - 12:00
-        highlights.push({ start: 12 * Math.PI, end: endAngle, color, type: 'outer' }); // 12:00 - 24:00
+        // Split the highlight into inner and outer
+        highlights.push({ start: startAngle, end: calculateAngle(11, 59), color, type: 'inner' });
+        highlights.push({ start: calculateAngle(12, 0), end: endAngle, color, type: 'outer' });
     }
 
     drawClock();
@@ -104,7 +116,6 @@ document.getElementById('addHighlightButton').addEventListener('click', () => {
 
 // Function to calculate the angle based on the hour and minute
 function calculateAngle(hour, minute) {
-    // Adjust the calculation so it handles 12:00 as the boundary
     const totalMinutes = (hour % 12) * 60 + minute; // Convert time to total minutes past 12 AM
     return (totalMinutes / 720) * 2 * Math.PI; // Map total minutes to radians (0-2π)
 }
@@ -171,7 +182,7 @@ function updateCanvasSize() {
 function drawClock() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Step 1: Draw highlights (outer first, inner second)
+    // Draw highlights (outer first, then inner)
     highlights
         .filter((highlight) => highlight.type === 'outer')
         .forEach((highlight) => drawHighlight(highlight));
@@ -180,7 +191,7 @@ function drawClock() {
         .filter((highlight) => highlight.type === 'inner')
         .forEach((highlight) => drawHighlight(highlight));
 
-    // Step 2: Draw the clock face, ticks, and numbers
+    // Draw the clock face, ticks, and numbers
     drawCircle();
     drawTicks();
     if (showNumbers) drawNumbers();
@@ -195,13 +206,12 @@ function drawClock() {
     const minuteAngle = minutes * 6 + seconds * 0.1;
     const hourAngle = hours * 30 + minutes * 0.5;
 
-    // Step 3: Draw hands with dynamic colors and widths
     // Draw hands with dynamic colors and widths
     drawHand(clockRadius * 0.7, hourAngle, hourHandColor, hourHandWidth);
     drawHand(clockRadius * 0.9, minuteAngle, minuteHandColor, minuteHandWidth);
     drawHand(clockRadius * 0.95, secondAngle, secondHandColor, secondHandWidth);
 
-    // Step 4: Draw date
+    // Draw date
     drawDate(hourAngle);
 }
 
