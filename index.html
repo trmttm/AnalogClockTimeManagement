@@ -46,12 +46,16 @@
 
             <!-- Highlight Controls -->
             <h3>Highlight Controls</h3>
-            <label for="startTime">Start Time (0-24):</label>
-            <input type="number" id="startTime" min="0" max="24">
+            <label for="startTimeHour">Start Hour (0-23):</label>
+            <input type="number" id="startTimeHour" min="0" max="23" value="1">
+            <label for="startTimeMinute">Start Minute (0-59):</label>
+            <input type="number" id="startTimeMinute" min="0" max="59" value="30">
             <br>
 
-            <label for="endTime">End Time (0-24):</label>
-            <input type="number" id="endTime" min="0" max="24">
+            <label for="endTimeHour">End Hour (0-23):</label>
+            <input type="number" id="endTimeHour" min="0" max="23" value="4">
+            <label for="endTimeMinute">End Minute (0-59):</label>
+            <input type="number" id="endTimeMinute" min="0" max="59" value="0">
             <br>
 
             <label for="highlightColor">Highlight Color:</label>
