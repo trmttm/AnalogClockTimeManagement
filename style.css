@@ -220,28 +220,32 @@ button:hover {
     opacity: 0.8;
 }
 
+/* Activity button styles */
+.activity-btn {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: left;
+}
+
 /* Active button style */
 .activity-btn.active-button {
-    border: 3px solid #FFD700;  /* Gold border to indicate active button */
-    box-shadow: 0px 0px 15px rgba(255, 215, 0, 0.6);  /* Glowing effect around the button */
-    font-weight: bold;  /* Make the text bold for emphasis */
-    color: #fff;  /* Text color changes for contrast */
+    border: 3px solid #FFD700; /* Gold border to indicate active button */
+    box-shadow: 0px 0px 15px rgba(255, 215, 0, 0.6); /* Glowing effect around the button */
+    font-weight: bold; /* Make the text bold for emphasis */
+    color: #fff; /* Text color changes for contrast */
 }
 
 /* Optional: Hover effect for the active button */
 .activity-btn.active-button:hover {
-    opacity: 1;  /* Ensure hover doesn't override the active glow effect */
+    opacity: 1; /* Ensure hover doesn't override the active glow effect */
 }
 
-/* Input fields for changing text and color */
-input[type="text"], input[type="color"] {
-    width: 100%;
-    padding: 8px;
-    margin: 10px 0;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
+/* Button styles for Save and Load Config */
 button {
     width: 100%;
     padding: 10px;
@@ -257,6 +261,7 @@ button:hover {
     background-color: #0056b3;
 }
 
+
 /* Ensure color picker is styled properly */
 input[type="color"] {
     width: 100%;
@@ -269,13 +274,13 @@ input[type="color"] {
 
 /* Active button style */
 .activity-btn.active-button {
-    border: 3px solid #FFD700;  /* Gold border to indicate active button */
-    box-shadow: 0px 0px 15px rgba(255, 215, 0, 0.6);  /* Glowing effect around the button */
-    font-weight: bold;  /* Make the text bold for emphasis */
-    color: #fff;  /* Text color changes for contrast */
+    border: 3px solid #FFD700; /* Gold border to indicate active button */
+    box-shadow: 0px 0px 15px rgba(255, 215, 0, 0.6); /* Glowing effect around the button */
+    font-weight: bold; /* Make the text bold for emphasis */
+    color: #fff; /* Text color changes for contrast */
 }
 
 /* Optional: Hover effect for the active button */
 .activity-btn.active-button:hover {
-    opacity: 1;  /* Ensure hover doesn't override the active glow effect */
+    opacity: 1; /* Ensure hover doesn't override the active glow effect */
 }

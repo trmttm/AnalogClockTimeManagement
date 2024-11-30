@@ -505,17 +505,17 @@ function initActivityButtons() {
     });
 }
 
-// Update the event listener for 'saveConfigButton' as follows:
+// Save the current configuration to a JSON file
 document.getElementById('saveConfigButton').addEventListener('click', () => {
     const configData = JSON.stringify(activitiesConfig, null, 2); // Convert to JSON format
-    const blob = new Blob([configData], { type: 'application/json' });
+    const blob = new Blob([configData], {type: 'application/json'});
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = 'activities_config.json'; // Set default file name
     link.click(); // Trigger download
 });
 
-// Function to load configuration from a JSON file
+// Load configuration from a JSON file
 document.getElementById('loadConfigButton').addEventListener('click', () => {
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
@@ -543,4 +543,3 @@ document.getElementById('loadConfigButton').addEventListener('click', () => {
 
 // Initialize buttons on page load
 initActivityButtons();
-
