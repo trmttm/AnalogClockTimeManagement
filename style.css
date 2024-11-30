@@ -243,3 +243,13 @@ button {
 button:hover {
     background-color: #0056b3;
 }
+
+/* Ensure color picker is styled properly */
+input[type="color"] {
+    width: 100%;
+    height: 30px;
+    padding: 5px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}

@@ -454,6 +454,7 @@ document.getElementById('hamburgerButton').addEventListener('click', () => {
 updateCanvasSize();
 setInterval(drawClock, 1000);
 window.addEventListener('resize', updateCanvasSize);
+
 // Variables for activity buttons and their configurations
 const activityButtons = document.querySelectorAll('.activity-btn');
 let activitiesConfig = [
@@ -479,7 +480,8 @@ function initActivityButtons() {
         // Attach click event to change the highlight color based on the button
         button.addEventListener('click', () => {
             // Change the highlight color to the button's color
-            document.getElementById('highlightColor').value = activity.color;
+            const colorInput = document.getElementById('highlightColor');
+            colorInput.value = activity.color; // Correctly update the color picker input value
 
             // Toggle Record off and back on with the new color
             if (isRecording) {
@@ -525,3 +527,4 @@ function saveConfigToLocalStorage() {
 
 // Initialize buttons on page load
 initActivityButtons();
+
