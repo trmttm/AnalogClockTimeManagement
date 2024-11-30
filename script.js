@@ -88,13 +88,13 @@ document.getElementById('addHighlightButton').addEventListener('click', () => {
 
     // Add highlight to the list (inner or outer based on time)
     if (endHour <= 12) {
-        highlights.push({ start: startAngle, end: endAngle, color, type: 'inner' });
+        highlights.push({start: startAngle, end: endAngle, color, type: 'inner'});
     } else if (startHour >= 12) {
-        highlights.push({ start: startAngle, end: endAngle, color, type: 'outer' });
+        highlights.push({start: startAngle, end: endAngle, color, type: 'outer'});
     } else {
         // Split the highlight into inner and outer
-        highlights.push({ start: startAngle, end: 12 * Math.PI, color, type: 'inner' });
-        highlights.push({ start: 12 * Math.PI, end: endAngle, color, type: 'outer' });
+        highlights.push({start: startAngle, end: 12 * Math.PI, color, type: 'inner'});
+        highlights.push({start: 12 * Math.PI, end: endAngle, color, type: 'outer'});
     }
 
     drawClock();
@@ -201,6 +201,7 @@ function drawClock() {
     // Step 4: Draw date
     drawDate(hourAngle);
 }
+
 // Draw clock face circle
 function drawCircle() {
     ctx.beginPath();
@@ -256,7 +257,7 @@ function drawHand(length, angle, color, width) {
 }
 
 // Draw a highlight (updated to use angles)
-function drawHighlight({ start, end, color, type }) {
+function drawHighlight({start, end, color, type}) {
     ctx.beginPath();
     ctx.moveTo(centerX, centerY);
 
@@ -270,6 +271,7 @@ function drawHighlight({ start, end, color, type }) {
     ctx.fillStyle = color;
     ctx.fill();
 }
+
 // Draw the date
 function drawDate(hourAngle) {
     const date = new Date();
@@ -289,7 +291,7 @@ document.getElementById('exportJsonButton').addEventListener('click', () => {
     const jsonString = JSON.stringify(clockState, null, 2); // Convert the state to a JSON string
 
     // Create a Blob with the JSON string (this is the file content)
-    const blob = new Blob([jsonString], { type: 'application/json' });
+    const blob = new Blob([jsonString], {type: 'application/json'});
 
     // Create a link element
     const link = document.createElement('a');
