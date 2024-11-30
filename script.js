@@ -454,3 +454,74 @@ document.getElementById('hamburgerButton').addEventListener('click', () => {
 updateCanvasSize();
 setInterval(drawClock, 1000);
 window.addEventListener('resize', updateCanvasSize);
+// Variables for activity buttons and their configurations
+const activityButtons = document.querySelectorAll('.activity-btn');
+let activitiesConfig = [
+    { id: 'btnSleep', color: '#808080', text: 'Sleep' },
+    { id: 'btnWork', color: '#FFFF00', text: 'Work' },
+    { id: 'btnExercise', color: '#A52A2A', text: 'Exercise' },
+    { id: 'btnStudy', color: '#00FF00', text: 'Study' },
+    { id: 'btnReading', color: '#FF6347', text: 'Reading' },
+    { id: 'btnFamily', color: '#4682B4', text: 'Family' },
+    { id: 'btnLeisure', color: '#FFD700', text: 'Leisure' },
+    { id: 'btnHobby', color: '#8A2BE2', text: 'Hobby' },
+    { id: 'btnMeeting', color: '#FF4500', text: 'Meeting' },
+    { id: 'btnRelax', color: '#3CB371', text: 'Relax' }
+];
+
+// Initialize the buttons with the saved configuration
+function initActivityButtons() {
+    activityButtons.forEach(button => {
+        const activity = activitiesConfig.find(a => a.id === button.id);
+        button.style.backgroundColor = activity.color;
+        button.textContent = activity.text;
+
+        // Attach click event to change the highlight color based on the button
+        button.addEventListener('click', () => {
+            // Change the highlight color to the button's color
+            document.getElementById('highlightColor').value = activity.color;
+
+            // Toggle Record off and back on with the new color
+            if (isRecording) {
+                toggleRecord(); // Toggle off Record
+                recordColor = activity.color; // Set new color from button
+                toggleRecord(); // Toggle back on Record
+            } else {
+                recordColor = activity.color; // Set color for new highlight
+            }
+        });
+    });
+}
+
+// Function to update activity color and text dynamically
+document.getElementById('saveConfigButton').addEventListener('click', () => {
+    const activityText = document.getElementById('activityText').value;
+    const activityColor = document.getElementById('activityColor').value;
+
+    // Update the first button (for example, Sleep) with the new configuration
+    const selectedButton = activityButtons[0]; // Assume user modifies the first button
+    selectedButton.style.backgroundColor = activityColor;
+    selectedButton.textContent = activityText;
+
+    // Save updated configuration
+    activitiesConfig[0] = { id: selectedButton.id, color: activityColor, text: activityText };
+});
+
+// Function to load the configuration from JSON
+document.getElementById('loadConfigButton').addEventListener('click', () => {
+    const savedConfig = localStorage.getItem('activitiesConfig');
+    if (savedConfig) {
+        activitiesConfig = JSON.parse(savedConfig);
+        initActivityButtons(); // Reinitialize the buttons with the loaded configuration
+    } else {
+        alert("No saved configuration found.");
+    }
+});
+
+// Save the current configuration to local storage
+function saveConfigToLocalStorage() {
+    localStorage.setItem('activitiesConfig', JSON.stringify(activitiesConfig));
+}
+
+// Initialize buttons on page load
+initActivityButtons();
