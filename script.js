@@ -461,16 +461,16 @@ let lastPressedButton = null;
 // Variables for activity buttons and their configurations
 const activityButtons = document.querySelectorAll('.activity-btn');
 let activitiesConfig = [
-    { id: 'btnSleep', color: '#808080', text: 'Sleep' },
-    { id: 'btnWork', color: '#FFFF00', text: 'Work' },
-    { id: 'btnExercise', color: '#A52A2A', text: 'Exercise' },
-    { id: 'btnStudy', color: '#00FF00', text: 'Study' },
-    { id: 'btnReading', color: '#FF6347', text: 'Reading' },
-    { id: 'btnFamily', color: '#4682B4', text: 'Family' },
-    { id: 'btnLeisure', color: '#FFD700', text: 'Leisure' },
-    { id: 'btnHobby', color: '#8A2BE2', text: 'Hobby' },
-    { id: 'btnMeeting', color: '#FF4500', text: 'Meeting' },
-    { id: 'btnRelax', color: '#3CB371', text: 'Relax' }
+    {id: 'btnSleep', color: '#808080', text: 'Sleep'},
+    {id: 'btnWork', color: '#FFFF00', text: 'Work'},
+    {id: 'btnExercise', color: '#A52A2A', text: 'Exercise'},
+    {id: 'btnStudy', color: '#00FF00', text: 'Study'},
+    {id: 'btnReading', color: '#FF6347', text: 'Reading'},
+    {id: 'btnFamily', color: '#4682B4', text: 'Family'},
+    {id: 'btnLeisure', color: '#FFD700', text: 'Leisure'},
+    {id: 'btnHobby', color: '#8A2BE2', text: 'Hobby'},
+    {id: 'btnMeeting', color: '#FF4500', text: 'Meeting'},
+    {id: 'btnRelax', color: '#3CB371', text: 'Relax'}
 ];
 
 // Initialize the buttons with the saved configuration
@@ -507,35 +507,39 @@ function initActivityButtons() {
 
 // Function to update activity color and text dynamically
 document.getElementById('saveConfigButton').addEventListener('click', () => {
-    const activityText = document.getElementById('activityText').value;
-    const activityColor = document.getElementById('activityColor').value;
-
-    // Update the first button (for example, Sleep) with the new configuration
-    const selectedButton = activityButtons[0]; // Assume user modifies the first button
-    selectedButton.style.backgroundColor = activityColor;
-    selectedButton.textContent = activityText;
-
-    // Save updated configuration
-    activitiesConfig[0] = { id: selectedButton.id, color: activityColor, text: activityText };
+    const configData = JSON.stringify(activitiesConfig, null, 2); // Convert to JSON format
+    const blob = new Blob([configData], {type: 'application/json'});
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'activities_config.json'; // Set default file name
+    link.click(); // Trigger download
 });
 
-// Function to load the configuration from JSON
+// Function to load configuration from a JSON file
 document.getElementById('loadConfigButton').addEventListener('click', () => {
-    const savedConfig = localStorage.getItem('activitiesConfig');
-    if (savedConfig) {
-        activitiesConfig = JSON.parse(savedConfig);
-        initActivityButtons(); // Reinitialize the buttons with the loaded configuration
-    } else {
-        alert("No saved configuration found.");
-    }
-});
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.json'; // Allow only JSON files
 
-// Save the current configuration to local storage
-function saveConfigToLocalStorage() {
-    localStorage.setItem('activitiesConfig', JSON.stringify(activitiesConfig));
-}
+    fileInput.addEventListener('change', () => {
+        const file = fileInput.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                try {
+                    const config = JSON.parse(reader.result); // Parse the JSON file
+                    activitiesConfig = config; // Update the activitiesConfig
+                    initActivityButtons(); // Reinitialize buttons with the new configuration
+                } catch (error) {
+                    alert('Invalid JSON format.');
+                }
+            };
+            reader.readAsText(file); // Read the file content
+        }
+    });
+
+    fileInput.click(); // Trigger the file input
+});
 
 // Initialize buttons on page load
 initActivityButtons();
-
-
