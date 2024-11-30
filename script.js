@@ -19,7 +19,21 @@ let recordStartTime = null; // Time when recording started
 let recordColor = '#FFA500'; // Default color for recording (can use highlightColor)
 
 // Add event listener for the "Record" button
-document.getElementById('recordButton').addEventListener('click', () => {
+document.getElementById('recordButton').addEventListener('click', toggleRecord);
+
+// Add event listener for the highlight color picker
+document.getElementById('highlightColor').addEventListener('input', () => {
+    if (isRecording) {
+        toggleRecord(); // Toggle Record off
+        recordColor = document.getElementById('highlightColor').value; // Update the color
+        toggleRecord(); // Toggle Record back on
+    } else {
+        recordColor = document.getElementById('highlightColor').value; // Just update the color
+    }
+});
+
+// Function to toggle the Record state
+function toggleRecord() {
     const recordButton = document.getElementById('recordButton');
     const currentTime = new Date(); // Get the current time when toggling
 
@@ -48,7 +62,7 @@ document.getElementById('recordButton').addEventListener('click', () => {
     }
 
     drawClock(); // Redraw the clock to reflect any changes
-});
+}
 
 // Event listeners for sliders and color pickers
 document.getElementById('hourWidth').addEventListener('input', (e) => {
