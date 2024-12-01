@@ -650,14 +650,6 @@ document.getElementById('loadExcelButton').addEventListener('click', () => {
     fileInput.click(); // Trigger the file picker
 });
 
-// Utility function to get the fill color of a cell
-function getCellFillColor(sheet, cellAddress) {
-    const cell = sheet[cellAddress];
-    if (cell && cell.s && cell.s.fgColor && cell.s.fgColor.rgb) {
-        return `#${cell.s.fgColor.rgb}`; // Convert RGB to hex color
-    }
-    return '#000000'; // Default to black if no color is found
-}
 
 // Handle "Highlight from Excel" button
 document.getElementById('highlightFromExcelButton').addEventListener('click', () => {
