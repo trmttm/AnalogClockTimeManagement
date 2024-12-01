@@ -588,5 +588,58 @@ document.getElementById('loadConfigButton').addEventListener('click', () => {
     fileInput.click(); // Trigger the file input
 });
 
+// Handle loading Excel file
+document.getElementById('loadExcelButton').addEventListener('click', () => {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.xlsx, .xls'; // Accept only Excel files
+
+    fileInput.addEventListener('change', async () => {
+        const file = fileInput.files[0];
+        if (file) {
+            try {
+                // Read the Excel file
+                const data = await file.arrayBuffer();
+                const workbook = XLSX.read(data, { type: 'array', cellStyles: true }); // Enable cell styles
+                const sheetName = workbook.SheetNames[0]; // Get the first sheet
+                const sheet = workbook.Sheets[sheetName];
+
+                // Parse the sheet data
+                const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 }); // Parse as an array of arrays
+                rows.shift(); // Remove the header row (row 1)
+
+                // Process each row and update activitiesConfig
+                activitiesConfig = rows.map((row, index) => {
+                    const buttonId = row[0]; // Column A: Button ID
+                    const buttonText = row[1]; // Column B: Activity text
+                    const buttonColor = getCellFillColor(sheet, `C${index + 2}`); // Column C: Cell color
+                    return {
+                        id: buttonId,
+                        text: buttonText,
+                        color: buttonColor
+                    };
+                });
+
+                // Re-generate activity buttons based on the updated config
+                generateActivityButtons();
+            } catch (error) {
+                console.error('Error loading Excel file:', error);
+                alert('Failed to load Excel file. Please ensure it is in the correct format.');
+            }
+        }
+    });
+
+    fileInput.click(); // Trigger the file picker
+});
+
+// Utility function to get the fill color of a cell
+function getCellFillColor(sheet, cellAddress) {
+    const cell = sheet[cellAddress];
+    if (cell && cell.s && cell.s.fgColor && cell.s.fgColor.rgb) {
+        return `#${cell.s.fgColor.rgb}`; // Convert RGB to hex color
+    }
+    return '#000000'; // Default to black if no color is found
+}
+
 // Initialize buttons on page load
 generateActivityButtons();
