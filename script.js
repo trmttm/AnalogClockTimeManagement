@@ -641,5 +641,78 @@ function getCellFillColor(sheet, cellAddress) {
     return '#000000'; // Default to black if no color is found
 }
 
+// Handle "Highlight from Excel" button
+document.getElementById('highlightFromExcelButton').addEventListener('click', () => {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.xlsx, .xls'; // Accept only Excel files
+
+    fileInput.addEventListener('change', async () => {
+        const file = fileInput.files[0];
+        if (file) {
+            try {
+                // Read the Excel file
+                const data = await file.arrayBuffer();
+                const workbook = XLSX.read(data, { type: 'array', cellStyles: true }); // Enable cell styles
+                const sheetName = workbook.SheetNames[0]; // Get the first sheet
+                const sheet = workbook.Sheets[sheetName];
+
+                // Parse the sheet data
+                const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 }); // Parse as an array of arrays
+                rows.splice(0, 2); // Remove the first two rows (headers)
+
+                // Process each row for highlights
+                rows.forEach((row, index) => {
+                    const startHour = parseInt(row[0], 10); // Column A: Start Hour
+                    const startMinute = parseInt(row[1], 10); // Column B: Start Minute
+                    const endHour = parseInt(row[2], 10); // Column C: End Hour
+                    const endMinute = parseInt(row[3], 10); // Column D: End Minute
+                    const color = getCellFillColor(sheet, `E${index + 3}`); // Column E: Cell color
+
+                    // Validate time ranges
+                    if (
+                        isNaN(startHour) || isNaN(startMinute) ||
+                        isNaN(endHour) || isNaN(endMinute) ||
+                        startHour < 0 || startHour > 23 || endHour < 0 || endHour > 24 ||
+                        startMinute < 0 || startMinute > 59 || endMinute < 0 || endMinute > 59
+                    ) {
+                        console.warn(`Invalid row at index ${index + 3}`);
+                        return;
+                    }
+
+                    // Convert start and end time to angles
+                    const startAngle = calculateAngle(startHour, startMinute);
+                    const endAngle = calculateAngle(endHour, endMinute);
+
+                    // Determine inner or outer highlight
+                    const type = startHour < 12 && (endHour < 12 || (endHour === 12 && endMinute === 0))
+                        ? 'inner'
+                        : 'outer';
+
+                    // Add highlight to the clock
+                    highlights.push({ start: startAngle, end: endAngle, color, type });
+                });
+
+                drawClock(); // Redraw the clock with new highlights
+            } catch (error) {
+                console.error('Error processing Excel file:', error);
+                alert('Failed to load Excel file. Please ensure it is in the correct format.');
+            }
+        }
+    });
+
+    fileInput.click(); // Trigger the file picker
+});
+
+// Utility function to get the fill color of a cell
+function getCellFillColor(sheet, cellAddress) {
+    const cell = sheet[cellAddress];
+    if (cell && cell.s && cell.s.fgColor && cell.s.fgColor.rgb) {
+        return `#${cell.s.fgColor.rgb}`; // Convert RGB to hex color
+    }
+    return '#000000'; // Default to black if no color is found
+}
+
+
 // Initialize buttons on page load
 generateActivityButtons();
