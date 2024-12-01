@@ -236,13 +236,46 @@ function drawClock() {
         .forEach((highlight) => drawHighlight(highlight));
 
     // Handle dynamic recording highlight
-    if (isRecording && recordStartTime) {
-        const currentTime = new Date();
-        const startAngle = calculateAngle(recordStartTime.getHours(), recordStartTime.getMinutes());
-        const endAngle = calculateAngle(currentTime.getHours(), currentTime.getMinutes());
-        const type = recordStartTime.getHours() >= 12 ? 'outer' : 'inner'; // Determine inner or outer
-        drawHighlight({start: startAngle, end: endAngle, color: recordColor, type});
+if (isRecording && recordStartTime) {
+    const currentTime = new Date();
+    const currentTimeHours = currentTime.getHours();
+    const currentTimeMinutes = currentTime.getMinutes();
+
+    // Calculate angles for start and current time
+    const startAngle = calculateAngle(recordStartTime.getHours(), recordStartTime.getMinutes());
+    const currentAngle = calculateAngle(currentTimeHours, currentTimeMinutes);
+
+    // Check if we span across 12:00 PM
+    if (recordStartTime.getHours() < 12 && currentTimeHours >= 12) {
+        // Split the highlight into two parts:
+        // 1. Inner fill from startTime to 12:00 PM
+        const noonAngle = calculateAngle(12, 0);
+        drawHighlight({
+            start: startAngle,
+            end: noonAngle,
+            color: recordColor,
+            type: 'inner'
+        });
+
+        // 2. Outer fill from 12:00 PM to current time
+        drawHighlight({
+            start: noonAngle,
+            end: currentAngle,
+            color: recordColor,
+            type: 'outer'
+        });
+    } else {
+        // Standard behavior: Inner or outer fill based on start time
+        const type = recordStartTime.getHours() >= 12 ? 'outer' : 'inner';
+        drawHighlight({
+            start: startAngle,
+            end: currentAngle,
+            color: recordColor,
+            type
+        });
     }
+}
+
 
     // Draw the clock face, ticks, and numbers
     drawCircle();
