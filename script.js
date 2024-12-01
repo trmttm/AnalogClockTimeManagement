@@ -662,38 +662,63 @@ document.getElementById('highlightFromExcelButton').addEventListener('click', ()
                 rows.splice(0, 2); // Remove the first two rows (headers)
 
                 // Process each row for highlights
-                rows.forEach((row, index) => {
-                    const startHour = parseInt(row[0], 10); // Column A: Start Hour
-                    const startMinute = parseInt(row[1], 10); // Column B: Start Minute
-                    const endHour = parseInt(row[2], 10); // Column C: End Hour
-                    const endMinute = parseInt(row[3], 10); // Column D: End Minute
-                    const color = getCellFillColor(sheet, `E${index + 3}`); // Column E: Cell color
+rows.forEach((row, index) => {
+    const startHour = parseInt(row[0], 10); // Column A: Start Hour
+    const startMinute = parseInt(row[1], 10); // Column B: Start Minute
+    const endHour = parseInt(row[2], 10); // Column C: End Hour
+    const endMinute = parseInt(row[3], 10); // Column D: End Minute
+    const color = getCellFillColor(sheet, `E${index + 3}`); // Column E: Cell color
 
-                    // Validate time ranges
-                    if (
-                        isNaN(startHour) || isNaN(startMinute) ||
-                        isNaN(endHour) || isNaN(endMinute) ||
-                        startHour < 0 || startHour > 23 || endHour < 0 || endHour > 24 ||
-                        startMinute < 0 || startMinute > 59 || endMinute < 0 || endMinute > 59
-                    ) {
-                        console.warn(`Invalid row at index ${index + 3}`);
-                        return;
-                    }
+    // Validate time ranges
+    if (
+        isNaN(startHour) || isNaN(startMinute) ||
+        isNaN(endHour) || isNaN(endMinute) ||
+        startHour < 0 || startHour > 23 || endHour < 0 || endHour > 24 ||
+        startMinute < 0 || startMinute > 59 || endMinute < 0 || endMinute > 59
+    ) {
+        console.warn(`Invalid row at index ${index + 3}`);
+        return;
+    }
 
-                    // Convert start and end time to angles
-                    const startAngle = calculateAngle(startHour, startMinute);
-                    const endAngle = calculateAngle(endHour, endMinute);
+    // Convert start and end time to angles
+    const startAngle = calculateAngle(startHour, startMinute);
+    const endAngle = calculateAngle(endHour, endMinute);
 
-                    // Determine inner or outer highlight
-                    const type = startHour < 12 && (endHour < 12 || (endHour === 12 && endMinute === 0))
-                        ? 'inner'
-                        : 'outer';
+    if (startHour < 12 && endHour >= 12) {
+        // Case 1: Time range crosses 12:00
+        const noonAngle = calculateAngle(12, 0);
 
-                    // Add highlight to the clock
-                    highlights.push({ start: startAngle, end: endAngle, color, type });
-                });
+        // Inner fill from Start Time to 12:00
+        highlights.push({
+            start: startAngle,
+            end: noonAngle,
+            color,
+            type: 'inner'
+        });
 
-                drawClock(); // Redraw the clock with new highlights
+        // Outer fill from 12:00 to End Time
+        highlights.push({
+            start: noonAngle,
+            end: endAngle,
+            color,
+            type: 'outer'
+        });
+    } else {
+        // Case 2: Time range does not cross 12:00
+        const type = startHour < 12 ? 'inner' : 'outer';
+        highlights.push({
+            start: startAngle,
+            end: endAngle,
+            color,
+            type
+        });
+    }
+});
+
+// Redraw the clock with the new highlights
+drawClock();
+
+
             } catch (error) {
                 console.error('Error processing Excel file:', error);
                 alert('Failed to load Excel file. Please ensure it is in the correct format.');
