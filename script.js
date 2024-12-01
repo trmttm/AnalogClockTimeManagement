@@ -245,24 +245,41 @@ function drawClock() {
         const startAngle = calculateAngle(recordStartTime.getHours(), recordStartTime.getMinutes());
         const currentAngle = calculateAngle(currentTimeHours, currentTimeMinutes);
 
-        // Check if we span across 12:00 PM
+        // Check if the time range spans across 12:00 PM or midnight
         if (recordStartTime.getHours() < 12 && currentTimeHours >= 12) {
-            // Split the highlight into two parts:
-            // 1. Inner fill from startTime to 12:00 PM
-            const noonAngle = calculateAngle(12, 0);
+            // Case 1: Spans from AM to PM (e.g., 10:00 AM to 3:00 PM)
+            const noonAngle = calculateAngle(12, 0); // 12:00 PM angle
             drawHighlight({
                 start: startAngle,
                 end: noonAngle,
                 color: recordColor,
                 type: 'inner'
             });
-
-            // 2. Outer fill from 12:00 PM to current time
             drawHighlight({
                 start: noonAngle,
                 end: currentAngle,
                 color: recordColor,
                 type: 'outer'
+            });
+        } else if (recordStartTime.getHours() >= 12 && currentTimeHours < 12) {
+            // Case 2: Spans from PM to AM (e.g., 9:00 PM to 2:00 AM)
+            const midnightAngle = calculateAngle(0, 0); // 12:00 AM angle
+            const endOfDayAngle = calculateAngle(24, 0); // 24:00 or end of day angle
+
+            // Highlight from start time to midnight (PM portion)
+            drawHighlight({
+                start: startAngle,
+                end: midnightAngle,
+                color: recordColor,
+                type: 'outer'
+            });
+
+            // Highlight from midnight to current time (AM portion)
+            drawHighlight({
+                start: midnightAngle,
+                end: currentAngle,
+                color: recordColor,
+                type: 'inner'
             });
         } else {
             // Standard behavior: Inner or outer fill based on start time
@@ -274,6 +291,7 @@ function drawClock() {
                 type
             });
         }
+
     }
 
 
