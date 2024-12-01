@@ -245,24 +245,41 @@ function drawClock() {
         const startAngle = calculateAngle(recordStartTime.getHours(), recordStartTime.getMinutes());
         const currentAngle = calculateAngle(currentTimeHours, currentTimeMinutes);
 
-        // Check if we span across 12:00 PM
+        // Check if the time range spans across 12:00 PM or midnight
         if (recordStartTime.getHours() < 12 && currentTimeHours >= 12) {
-            // Split the highlight into two parts:
-            // 1. Inner fill from startTime to 12:00 PM
-            const noonAngle = calculateAngle(12, 0);
+            // Case 1: Spans from AM to PM (e.g., 10:00 AM to 3:00 PM)
+            const noonAngle = calculateAngle(12, 0); // 12:00 PM angle
             drawHighlight({
                 start: startAngle,
                 end: noonAngle,
                 color: recordColor,
                 type: 'inner'
             });
-
-            // 2. Outer fill from 12:00 PM to current time
             drawHighlight({
                 start: noonAngle,
                 end: currentAngle,
                 color: recordColor,
                 type: 'outer'
+            });
+        } else if (recordStartTime.getHours() >= 12 && currentTimeHours < 12) {
+            // Case 2: Spans from PM to AM (e.g., 9:00 PM to 2:00 AM)
+            const midnightAngle = calculateAngle(0, 0); // 12:00 AM angle
+            const endOfDayAngle = calculateAngle(24, 0); // 24:00 or end of day angle
+
+            // Highlight from start time to midnight (PM portion)
+            drawHighlight({
+                start: startAngle,
+                end: midnightAngle,
+                color: recordColor,
+                type: 'outer'
+            });
+
+            // Highlight from midnight to current time (AM portion)
+            drawHighlight({
+                start: midnightAngle,
+                end: currentAngle,
+                color: recordColor,
+                type: 'inner'
             });
         } else {
             // Standard behavior: Inner or outer fill based on start time
@@ -274,31 +291,33 @@ function drawClock() {
                 type
             });
         }
+
     }
+}
 
 
-    // Draw the clock face, ticks, and numbers
-    drawCircle();
-    drawTicks();
-    if (showNumbers) drawNumbers();
+// Draw the clock face, ticks, and numbers
+drawCircle();
+drawTicks();
+if (showNumbers) drawNumbers();
 
-    // Get current time
-    const currentTime = new Date();
-    const seconds = currentTime.getSeconds();
-    const minutes = currentTime.getMinutes();
-    const hours = currentTime.getHours() % 12;
+// Get current time
+const currentTime = new Date();
+const seconds = currentTime.getSeconds();
+const minutes = currentTime.getMinutes();
+const hours = currentTime.getHours() % 12;
 
-    const secondAngle = seconds * 6;
-    const minuteAngle = minutes * 6 + seconds * 0.1;
-    const hourAngle = hours * 30 + minutes * 0.5;
+const secondAngle = seconds * 6;
+const minuteAngle = minutes * 6 + seconds * 0.1;
+const hourAngle = hours * 30 + minutes * 0.5;
 
-    // Draw hands with dynamic colors and widths
-    drawHand(clockRadius * 0.7, hourAngle, hourHandColor, hourHandWidth);
-    drawHand(clockRadius * 0.9, minuteAngle, minuteHandColor, minuteHandWidth);
-    drawHand(clockRadius * 0.95, secondAngle, secondHandColor, secondHandWidth);
+// Draw hands with dynamic colors and widths
+drawHand(clockRadius * 0.7, hourAngle, hourHandColor, hourHandWidth);
+drawHand(clockRadius * 0.9, minuteAngle, minuteHandColor, minuteHandWidth);
+drawHand(clockRadius * 0.95, secondAngle, secondHandColor, secondHandWidth);
 
-    // Draw date
-    drawDate(hourAngle);
+// Draw date
+drawDate(hourAngle);
 }
 
 // Draw clock face circle
@@ -600,12 +619,12 @@ document.getElementById('loadExcelButton').addEventListener('click', () => {
             try {
                 // Read the Excel file
                 const data = await file.arrayBuffer();
-                const workbook = XLSX.read(data, { type: 'array', cellStyles: true }); // Enable cell styles
+                const workbook = XLSX.read(data, {type: 'array', cellStyles: true}); // Enable cell styles
                 const sheetName = workbook.SheetNames[0]; // Get the first sheet
                 const sheet = workbook.Sheets[sheetName];
 
                 // Parse the sheet data
-                const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 }); // Parse as an array of arrays
+                const rows = XLSX.utils.sheet_to_json(sheet, {header: 1}); // Parse as an array of arrays
                 rows.shift(); // Remove the header row (row 1)
 
                 // Process each row and update activitiesConfig
@@ -653,70 +672,70 @@ document.getElementById('highlightFromExcelButton').addEventListener('click', ()
             try {
                 // Read the Excel file
                 const data = await file.arrayBuffer();
-                const workbook = XLSX.read(data, { type: 'array', cellStyles: true }); // Enable cell styles
+                const workbook = XLSX.read(data, {type: 'array', cellStyles: true}); // Enable cell styles
                 const sheetName = workbook.SheetNames[0]; // Get the first sheet
                 const sheet = workbook.Sheets[sheetName];
 
                 // Parse the sheet data
-                const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 }); // Parse as an array of arrays
+                const rows = XLSX.utils.sheet_to_json(sheet, {header: 1}); // Parse as an array of arrays
                 rows.splice(0, 2); // Remove the first two rows (headers)
 
                 // Process each row for highlights
-rows.forEach((row, index) => {
-    const startHour = parseInt(row[0], 10); // Column A: Start Hour
-    const startMinute = parseInt(row[1], 10); // Column B: Start Minute
-    const endHour = parseInt(row[2], 10); // Column C: End Hour
-    const endMinute = parseInt(row[3], 10); // Column D: End Minute
-    const color = getCellFillColor(sheet, `E${index + 3}`); // Column E: Cell color
+                rows.forEach((row, index) => {
+                    const startHour = parseInt(row[0], 10); // Column A: Start Hour
+                    const startMinute = parseInt(row[1], 10); // Column B: Start Minute
+                    const endHour = parseInt(row[2], 10); // Column C: End Hour
+                    const endMinute = parseInt(row[3], 10); // Column D: End Minute
+                    const color = getCellFillColor(sheet, `E${index + 3}`); // Column E: Cell color
 
-    // Validate time ranges
-    if (
-        isNaN(startHour) || isNaN(startMinute) ||
-        isNaN(endHour) || isNaN(endMinute) ||
-        startHour < 0 || startHour > 23 || endHour < 0 || endHour > 24 ||
-        startMinute < 0 || startMinute > 59 || endMinute < 0 || endMinute > 59
-    ) {
-        console.warn(`Invalid row at index ${index + 3}`);
-        return;
-    }
+                    // Validate time ranges
+                    if (
+                        isNaN(startHour) || isNaN(startMinute) ||
+                        isNaN(endHour) || isNaN(endMinute) ||
+                        startHour < 0 || startHour > 23 || endHour < 0 || endHour > 24 ||
+                        startMinute < 0 || startMinute > 59 || endMinute < 0 || endMinute > 59
+                    ) {
+                        console.warn(`Invalid row at index ${index + 3}`);
+                        return;
+                    }
 
-    // Convert start and end time to angles
-    const startAngle = calculateAngle(startHour, startMinute);
-    const endAngle = calculateAngle(endHour, endMinute);
+                    // Convert start and end time to angles
+                    const startAngle = calculateAngle(startHour, startMinute);
+                    const endAngle = calculateAngle(endHour, endMinute);
 
-    if (startHour < 12 && endHour >= 12) {
-        // Case 1: Time range crosses 12:00
-        const noonAngle = calculateAngle(12, 0);
+                    if (startHour < 12 && endHour >= 12) {
+                        // Case 1: Time range crosses 12:00
+                        const noonAngle = calculateAngle(12, 0);
 
-        // Inner fill from Start Time to 12:00
-        highlights.push({
-            start: startAngle,
-            end: noonAngle,
-            color,
-            type: 'inner'
-        });
+                        // Inner fill from Start Time to 12:00
+                        highlights.push({
+                            start: startAngle,
+                            end: noonAngle,
+                            color,
+                            type: 'inner'
+                        });
 
-        // Outer fill from 12:00 to End Time
-        highlights.push({
-            start: noonAngle,
-            end: endAngle,
-            color,
-            type: 'outer'
-        });
-    } else {
-        // Case 2: Time range does not cross 12:00
-        const type = startHour < 12 ? 'inner' : 'outer';
-        highlights.push({
-            start: startAngle,
-            end: endAngle,
-            color,
-            type
-        });
-    }
-});
+                        // Outer fill from 12:00 to End Time
+                        highlights.push({
+                            start: noonAngle,
+                            end: endAngle,
+                            color,
+                            type: 'outer'
+                        });
+                    } else {
+                        // Case 2: Time range does not cross 12:00
+                        const type = startHour < 12 ? 'inner' : 'outer';
+                        highlights.push({
+                            start: startAngle,
+                            end: endAngle,
+                            color,
+                            type
+                        });
+                    }
+                });
 
 // Redraw the clock with the new highlights
-drawClock();
+                drawClock();
 
 
             } catch (error) {
