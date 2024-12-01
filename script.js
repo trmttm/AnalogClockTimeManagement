@@ -147,7 +147,7 @@ document.getElementById('addHighlightButton').addEventListener('click', () => {
         const middayAngle = calculateAngle(12, 0); // Angle for 12:00 PM
         highlights.push({start: startAngle, end: middayAngle, color, type: 'inner'}); // First part
         highlights.push({start: middayAngle, end: endAngle, color, type: 'outer'}); // Second part
-    } else if (endHour <= 12) {
+    } else if (endHour < 12 || (endHour === 12 && endMinute === 0)) {
         // Normal case for inner fill (0:00 - 12:00 range)
         highlights.push({start: startAngle, end: endAngle, color, type: 'inner'});
     } else {
@@ -236,45 +236,45 @@ function drawClock() {
         .forEach((highlight) => drawHighlight(highlight));
 
     // Handle dynamic recording highlight
-if (isRecording && recordStartTime) {
-    const currentTime = new Date();
-    const currentTimeHours = currentTime.getHours();
-    const currentTimeMinutes = currentTime.getMinutes();
+    if (isRecording && recordStartTime) {
+        const currentTime = new Date();
+        const currentTimeHours = currentTime.getHours();
+        const currentTimeMinutes = currentTime.getMinutes();
 
-    // Calculate angles for start and current time
-    const startAngle = calculateAngle(recordStartTime.getHours(), recordStartTime.getMinutes());
-    const currentAngle = calculateAngle(currentTimeHours, currentTimeMinutes);
+        // Calculate angles for start and current time
+        const startAngle = calculateAngle(recordStartTime.getHours(), recordStartTime.getMinutes());
+        const currentAngle = calculateAngle(currentTimeHours, currentTimeMinutes);
 
-    // Check if we span across 12:00 PM
-    if (recordStartTime.getHours() < 12 && currentTimeHours >= 12) {
-        // Split the highlight into two parts:
-        // 1. Inner fill from startTime to 12:00 PM
-        const noonAngle = calculateAngle(12, 0);
-        drawHighlight({
-            start: startAngle,
-            end: noonAngle,
-            color: recordColor,
-            type: 'inner'
-        });
+        // Check if we span across 12:00 PM
+        if (recordStartTime.getHours() < 12 && currentTimeHours >= 12) {
+            // Split the highlight into two parts:
+            // 1. Inner fill from startTime to 12:00 PM
+            const noonAngle = calculateAngle(12, 0);
+            drawHighlight({
+                start: startAngle,
+                end: noonAngle,
+                color: recordColor,
+                type: 'inner'
+            });
 
-        // 2. Outer fill from 12:00 PM to current time
-        drawHighlight({
-            start: noonAngle,
-            end: currentAngle,
-            color: recordColor,
-            type: 'outer'
-        });
-    } else {
-        // Standard behavior: Inner or outer fill based on start time
-        const type = recordStartTime.getHours() >= 12 ? 'outer' : 'inner';
-        drawHighlight({
-            start: startAngle,
-            end: currentAngle,
-            color: recordColor,
-            type
-        });
+            // 2. Outer fill from 12:00 PM to current time
+            drawHighlight({
+                start: noonAngle,
+                end: currentAngle,
+                color: recordColor,
+                type: 'outer'
+            });
+        } else {
+            // Standard behavior: Inner or outer fill based on start time
+            const type = recordStartTime.getHours() >= 12 ? 'outer' : 'inner';
+            drawHighlight({
+                start: startAngle,
+                end: currentAngle,
+                color: recordColor,
+                type
+            });
+        }
     }
-}
 
 
     // Draw the clock face, ticks, and numbers
@@ -499,16 +499,16 @@ document.getElementById('activitiesButton').addEventListener('click', () => {
 
 // Variables for activity buttons and their configurations
 let activitiesConfig = [
-    { id: 'Activity_btn_01', color: '#808080', text: 'Sleep' },
-    { id: 'Activity_btn_02', color: '#FFFF00', text: 'Work' },
-    { id: 'Activity_btn_03', color: '#A52A2A', text: 'Exercise' },
-    { id: 'Activity_btn_04', color: '#00FF00', text: 'Study' },
-    { id: 'Activity_btn_05', color: '#FF6347', text: 'Reading' },
-    { id: 'Activity_btn_06', color: '#4682B4', text: 'Family' },
-    { id: 'Activity_btn_07', color: '#FFD700', text: 'Leisure' },
-    { id: 'Activity_btn_08', color: '#8A2BE2', text: 'Hobby' },
-    { id: 'Activity_btn_09', color: '#FF4500', text: 'Meeting' },
-    { id: 'Activity_btn_10', color: '#3CB371', text: 'Relax' }
+    {id: 'Activity_btn_01', color: '#808080', text: 'Sleep'},
+    {id: 'Activity_btn_02', color: '#FFFF00', text: 'Work'},
+    {id: 'Activity_btn_03', color: '#A52A2A', text: 'Exercise'},
+    {id: 'Activity_btn_04', color: '#00FF00', text: 'Study'},
+    {id: 'Activity_btn_05', color: '#FF6347', text: 'Reading'},
+    {id: 'Activity_btn_06', color: '#4682B4', text: 'Family'},
+    {id: 'Activity_btn_07', color: '#FFD700', text: 'Leisure'},
+    {id: 'Activity_btn_08', color: '#8A2BE2', text: 'Hobby'},
+    {id: 'Activity_btn_09', color: '#FF4500', text: 'Meeting'},
+    {id: 'Activity_btn_10', color: '#3CB371', text: 'Relax'}
 ];
 
 // Dynamically generate activity buttons based on activitiesConfig
@@ -555,7 +555,7 @@ function generateActivityButtons() {
 // Function to save the configuration to a JSON file
 document.getElementById('saveConfigButton').addEventListener('click', () => {
     const configData = JSON.stringify(activitiesConfig, null, 2); // Convert to JSON format
-    const blob = new Blob([configData], { type: 'application/json' });
+    const blob = new Blob([configData], {type: 'application/json'});
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = 'activities_config.json'; // Set default file name
