@@ -226,11 +226,12 @@ function updateCanvasSize() {
 function drawClock() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw saved highlights (outer first, then inner)
+    // Always draw the outer highlights first
     highlights
         .filter((highlight) => highlight.type === 'outer')
         .forEach((highlight) => drawHighlight(highlight));
 
+    // Then draw the inner highlights to ensure they are rendered on top
     highlights
         .filter((highlight) => highlight.type === 'inner')
         .forEach((highlight) => drawHighlight(highlight));
@@ -247,75 +248,38 @@ function drawClock() {
 
         // Check if the time range spans across 12:00 PM or midnight
         if (recordStartTime.getHours() < 12 && currentTimeHours >= 12) {
-            // Case 1: Spans from AM to PM (e.g., 10:00 AM to 3:00 PM)
-            const noonAngle = calculateAngle(12, 0); // 12:00 PM angle
-            drawHighlight({
-                start: startAngle,
-                end: noonAngle,
-                color: recordColor,
-                type: 'inner'
-            });
-            drawHighlight({
-                start: noonAngle,
-                end: currentAngle,
-                color: recordColor,
-                type: 'outer'
-            });
+            // Case 1: Spans from AM to PM
+            const noonAngle = calculateAngle(12, 0);
+            drawHighlight({ start: startAngle, end: noonAngle, color: recordColor, type: 'inner' });
+            drawHighlight({ start: noonAngle, end: currentAngle, color: recordColor, type: 'outer' });
         } else if (recordStartTime.getHours() >= 12 && currentTimeHours < 12) {
-            // Case 2: Spans from PM to AM (e.g., 9:00 PM to 2:00 AM)
-            const midnightAngle = calculateAngle(0, 0); // 12:00 AM angle
-            const endOfDayAngle = calculateAngle(24, 0); // 24:00 or end of day angle
-
-            // Highlight from start time to midnight (PM portion)
-            drawHighlight({
-                start: startAngle,
-                end: midnightAngle,
-                color: recordColor,
-                type: 'outer'
-            });
-
-            // Highlight from midnight to current time (AM portion)
-            drawHighlight({
-                start: midnightAngle,
-                end: currentAngle,
-                color: recordColor,
-                type: 'inner'
-            });
+            // Case 2: Spans from PM to AM
+            const midnightAngle = calculateAngle(0, 0);
+            drawHighlight({ start: startAngle, end: midnightAngle, color: recordColor, type: 'outer' });
+            drawHighlight({ start: midnightAngle, end: currentAngle, color: recordColor, type: 'inner' });
         } else {
-            // Standard behavior: Inner or outer fill based on start time
+            // Standard behavior
             const type = recordStartTime.getHours() >= 12 ? 'outer' : 'inner';
-            drawHighlight({
-                start: startAngle,
-                end: currentAngle,
-                color: recordColor,
-                type
-            });
+            drawHighlight({ start: startAngle, end: currentAngle, color: recordColor, type });
         }
-
     }
-
 
     // Draw the clock face, ticks, and numbers
     drawCircle();
     drawTicks();
     if (showNumbers) drawNumbers();
 
-    // Get current time
+    // Draw hands
     const currentTime = new Date();
-    const seconds = currentTime.getSeconds();
-    const minutes = currentTime.getMinutes();
-    const hours = currentTime.getHours() % 12;
+    const secondAngle = currentTime.getSeconds() * 6;
+    const minuteAngle = currentTime.getMinutes() * 6 + currentTime.getSeconds() * 0.1;
+    const hourAngle = (currentTime.getHours() % 12) * 30 + currentTime.getMinutes() * 0.5;
 
-    const secondAngle = seconds * 6;
-    const minuteAngle = minutes * 6 + seconds * 0.1;
-    const hourAngle = hours * 30 + minutes * 0.5;
-
-    // Draw hands with dynamic colors and widths
     drawHand(clockRadius * 0.7, hourAngle, hourHandColor, hourHandWidth);
     drawHand(clockRadius * 0.9, minuteAngle, minuteHandColor, minuteHandWidth);
     drawHand(clockRadius * 0.95, secondAngle, secondHandColor, secondHandWidth);
 
-    // Draw date
+    // Draw the date
     drawDate(hourAngle);
 }
 
