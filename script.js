@@ -241,17 +241,17 @@ function drawClock() {
         if (recordStartTime.getHours() < 12 && currentTimeHours >= 12) {
             // Case 1: Spans from AM to PM
             const noonAngle = calculateAngle(12, 0);
-            recordingHighlights.push({ start: startAngle, end: noonAngle, color: recordColor, type: 'inner' });
-            recordingHighlights.push({ start: noonAngle, end: currentAngle, color: recordColor, type: 'outer' });
+            recordingHighlights.push({start: startAngle, end: noonAngle, color: recordColor, type: 'inner'});
+            recordingHighlights.push({start: noonAngle, end: currentAngle, color: recordColor, type: 'outer'});
         } else if (recordStartTime.getHours() >= 12 && currentTimeHours < 12) {
             // Case 2: Spans from PM to AM
             const midnightAngle = calculateAngle(0, 0);
-            recordingHighlights.push({ start: startAngle, end: midnightAngle, color: recordColor, type: 'outer' });
-            recordingHighlights.push({ start: midnightAngle, end: currentAngle, color: recordColor, type: 'inner' });
+            recordingHighlights.push({start: startAngle, end: midnightAngle, color: recordColor, type: 'outer'});
+            recordingHighlights.push({start: midnightAngle, end: currentAngle, color: recordColor, type: 'inner'});
         } else {
             // Standard behavior
             const type = recordStartTime.getHours() >= 12 ? 'outer' : 'inner';
-            recordingHighlights.push({ start: startAngle, end: currentAngle, color: recordColor, type });
+            recordingHighlights.push({start: startAngle, end: currentAngle, color: recordColor, type});
         }
     }
 
@@ -712,6 +712,44 @@ function getCellFillColor(sheet, cellAddress) {
         return `#${cell.s.fgColor.rgb}`; // Convert RGB to hex color
     }
     return '#000000'; // Default to black if no color is found
+}
+
+const draggable = document.getElementById('draggableControl');
+const dragHandle = draggable.querySelector('.drag-handle');
+
+let isDragging = false;
+let offsetX = 0;
+let offsetY = 0;
+
+// Handle mousedown event
+dragHandle.addEventListener('mousedown', (e) => {
+    isDragging = true;
+
+    // Calculate the offset between the mouse position and the top-left corner of the container
+    offsetX = e.clientX - draggable.offsetLeft;
+    offsetY = e.clientY - draggable.offsetTop;
+
+    // Add event listeners for mousemove and mouseup
+    document.addEventListener('mousemove', onDrag);
+    document.addEventListener('mouseup', stopDrag);
+});
+
+// Handle mousemove event
+function onDrag(e) {
+    if (!isDragging) return;
+
+    // Update the position of the container
+    draggable.style.left = `${e.clientX - offsetX}px`;
+    draggable.style.top = `${e.clientY - offsetY}px`;
+}
+
+// Handle mouseup event
+function stopDrag() {
+    isDragging = false;
+
+    // Remove the event listeners
+    document.removeEventListener('mousemove', onDrag);
+    document.removeEventListener('mouseup', stopDrag);
 }
 
 
