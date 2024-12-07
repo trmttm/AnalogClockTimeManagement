@@ -222,19 +222,11 @@ function updateCanvasSize() {
     drawClock();
 }
 
-// Update the drawClock function to include recording highlights
+// Update the drawClock function to ensure outer fill is always behind inner fill
 function drawClock() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Always draw the outer highlights first
-    highlights
-        .filter((highlight) => highlight.type === 'outer')
-        .forEach((highlight) => drawHighlight(highlight));
-
-    // Then draw the inner highlights to ensure they are rendered on top
-    highlights
-        .filter((highlight) => highlight.type === 'inner')
-        .forEach((highlight) => drawHighlight(highlight));
+    const recordingHighlights = []; // Temporary storage for recording highlights
 
     // Handle dynamic recording highlight
     if (isRecording && recordStartTime) {
@@ -246,23 +238,33 @@ function drawClock() {
         const startAngle = calculateAngle(recordStartTime.getHours(), recordStartTime.getMinutes());
         const currentAngle = calculateAngle(currentTimeHours, currentTimeMinutes);
 
-        // Check if the time range spans across 12:00 PM or midnight
         if (recordStartTime.getHours() < 12 && currentTimeHours >= 12) {
             // Case 1: Spans from AM to PM
             const noonAngle = calculateAngle(12, 0);
-            drawHighlight({ start: startAngle, end: noonAngle, color: recordColor, type: 'inner' });
-            drawHighlight({ start: noonAngle, end: currentAngle, color: recordColor, type: 'outer' });
+            recordingHighlights.push({ start: startAngle, end: noonAngle, color: recordColor, type: 'inner' });
+            recordingHighlights.push({ start: noonAngle, end: currentAngle, color: recordColor, type: 'outer' });
         } else if (recordStartTime.getHours() >= 12 && currentTimeHours < 12) {
             // Case 2: Spans from PM to AM
             const midnightAngle = calculateAngle(0, 0);
-            drawHighlight({ start: startAngle, end: midnightAngle, color: recordColor, type: 'outer' });
-            drawHighlight({ start: midnightAngle, end: currentAngle, color: recordColor, type: 'inner' });
+            recordingHighlights.push({ start: startAngle, end: midnightAngle, color: recordColor, type: 'outer' });
+            recordingHighlights.push({ start: midnightAngle, end: currentAngle, color: recordColor, type: 'inner' });
         } else {
             // Standard behavior
             const type = recordStartTime.getHours() >= 12 ? 'outer' : 'inner';
-            drawHighlight({ start: startAngle, end: currentAngle, color: recordColor, type });
+            recordingHighlights.push({ start: startAngle, end: currentAngle, color: recordColor, type });
         }
     }
+
+    // Draw highlights in the correct order
+    // Always draw outer highlights first
+    [...highlights, ...recordingHighlights]
+        .filter((highlight) => highlight.type === 'outer')
+        .forEach((highlight) => drawHighlight(highlight));
+
+    // Then draw inner highlights to ensure they are rendered on top
+    [...highlights, ...recordingHighlights]
+        .filter((highlight) => highlight.type === 'inner')
+        .forEach((highlight) => drawHighlight(highlight));
 
     // Draw the clock face, ticks, and numbers
     drawCircle();
